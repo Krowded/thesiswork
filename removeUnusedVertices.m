@@ -21,7 +21,7 @@ function [vertices] = removeUnusedVertices(vertices, groups)
             end
         end
 
-        %Set the entire group to be in the same position as it's closes
+        %Set the entire group to be in the same position as it's closest
         %neighbour
         vertices(currentGroup,:) = vertices(finishedGroups(closestGroup,:), :);
     end

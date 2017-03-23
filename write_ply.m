@@ -218,7 +218,9 @@ for i = 1:NumElements
       if Type{i}(j) <= 8
          fprintf(fid,'property %s %s\n',PlyTypeNames{Type{i}(j)},PropertyNames{i}{j});
       else
-         fprintf(fid,'property list uchar %s %s\n',PlyTypeNames{Type{i}(j)-9},PropertyNames{i}{j});
+         %fprintf(fid,'property list uchar %s %s\n',PlyTypeNames{Type{i}(j)-9},PropertyNames{i}{j});
+         %Quick fix, it breaks when more than 128 vertices
+         fprintf(fid,'property list uchar int %s\n',PropertyNames{i}{j});
       end
    end
 end
@@ -245,7 +247,7 @@ for i = 1:NumElements
          	for j = 1:length(PropertyNames{i})
             	if Type{i}(j) <= 8
                	fprintf(fid,[PrintfTypeChar{Type{i}(j)},' '],Data{i}{j}(k));
-            	else
+                else
                	fprintf(fid,'%u%s ',length(Data{i}{j}{k}),sprintf([' ',PrintfTypeChar{Type{i}(j)-9}],Data{i}{j}{k}));
 					end
             end
