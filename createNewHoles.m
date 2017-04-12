@@ -1,52 +1,66 @@
-function [vertices, faces] = createNewHoles(vertices, faces, holeIndices, lengthsOfHoles, normal, optional_normals)
-    if nargin < 6
+%Creates holes in the wall made up of the vertices
+%Number of levels is 1 or 2 and describes if the wall is 2D or 3D (i.e.  if it's 1
+%or 2 plygons deep)
+function [vertices, faces] = createNewHoles(vertices, faces, holeIndices, lengthsOfHoles, normal, numberOfLevels, optional_normals)
+    if nargin < 7
         normals = calculateNormals(vertices,faces); %Could save a couple of calculations doing this later, but it hurts readability
     else
         normals = optional_normals;
     end
     
+    %Normalize for safety
     normal = normalize(normal);
+    
     %Remove sideways faces (and their normals)
     facesToRemove = getPerpendicularFaceIndices(normals, normal);
     faces(facesToRemove,:) = [];
     normals(facesToRemove,:) = [];
     
-    for j = 1:2
-        if j == 2
-            normal = -normal;
+    %Create edge loops for both front and back of wall
+    frontEdges = [];
+    frontHoleIndices = [];
+    backEdges = [];
+    backHoleIndices = [];
+    for i = 1:length(lengthsOfHoles)
+        for j = 1:numberOfLevels
+            %Set up indices
+            e = lengthsOfHoles(i);
+            startIndex = 2*sum(lengthsOfHoles(1:(i-1))) + (j-1)*e + 1;
+            endIndex = startIndex - 1 + e;
+            
+            %Set up constraint edges
+            if j == 1
+                frontEdges = [frontEdges; createEdgeLoops(holeIndices(startIndex:endIndex), lengthsOfHoles(i))];
+                frontHoleIndices = [frontHoleIndices; holeIndices(startIndex:endIndex)];
+            else
+                backEdges = [backEdges; createEdgeLoops(holeIndices(startIndex:endIndex), lengthsOfHoles(i))];
+                backHoleIndices = [backHoleIndices; holeIndices(startIndex:endIndex)];
+            end
         end
-        
-        %Get faces with matching normal
-        facesToCheck = getSameDirectionFaceIndices(normals, normal);
+    end
 
-        %Set depth of the holes [SHOULDNT BE HERE]1
-        thisSideVerticeIndices = unique(faces(facesToCheck,:));
-        meanDepth = mean(vertices(thisSideVerticeIndices,:)*normal');
-        e = length(holeIndices);
-        startIndex = (j-1)*(e/2)+1;
-        endIndex = j*(e/2);
-        vertices(holeIndices(startIndex:endIndex),:) = vertices(holeIndices(startIndex:endIndex),:)...
-                                                       - normal.*(vertices(holeIndices(startIndex:endIndex),:)*normal')...
-                                                       + normal.*meanDepth;
-        
-        %Set up constraint edges
-        edges = createEdgeLoops(holeIndices(startIndex:endIndex),lengthsOfHoles);
-        
-        %Remove faces that will be retriangulated, retriangulate, and then
-        %append the new ones
-        indices = unique(faces(facesToCheck,:));
-        indices = [indices(:)', holeIndices(startIndex:endIndex)];
-        faces(facesToCheck,:) = [];
-        normals(facesToCheck,:) = [];
-        faces = [faces; constrainedDelaunayTriangulation(vertices, indices, edges, normal)];
-    end    
+    %Get faces with matching normal (i.e. the front wall)
+    frontFaces = getSameDirectionFaceIndices(normals, normal);
+    frontWallIndices = unique(faces(frontFaces,:));
+    backFaces = getSameDirectionFaceIndices(normals, -normal);
+    backWallIndices = unique(faces(backFaces,:));
     
-    %Create faces between the depth levels ("window sills")
-     for i = 1:length(lengthsOfHoles)
-         numberOfVerticesPerLevel = lengthsOfHoles(i);
-         faces = [faces; fillWindingFaces(numberOfVerticesPerLevel, 2, holeIndices)];
-     end
     
-    %Clean up
-    [vertices, faces] = removeUnreferencedVertices(vertices,faces);
+    %Remove faces that will be retriangulated
+    indicesToBeRetriangulated = unique([frontWallIndices; backWallIndices]);
+    faces(indicesToBeRetriangulated,:) = [];
+    %normals(indicesToBeRetriangulated,:) = []; %Not applicable atm, but it might be needed later
+
+    %Retriangulate and append
+    frontIndices = unique([frontHoleIndices; frontWallIndices]);
+    backIndices = unique([backHoleIndices; backWallIndices]);
+    newFrontFaces = constrainedDelaunayTriangulation(vertices, frontIndices, frontEdges, normal);
+    newBackFaces = constrainedDelaunayTriangulation(vertices, backIndices, backEdges, -normal);
+    faces = [faces; newFrontFaces; newBackFaces];
+    
+     %Create faces between the depth levels ("window sills")
+     faces = createFacesBetweenContours(faces, holeIndices, lengthsOfHoles);
+     
+     %Clean up
+%     [vertices, faces] = removeUnreferencedVertices(vertices,faces);
 end

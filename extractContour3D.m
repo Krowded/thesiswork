@@ -25,6 +25,9 @@ function [vertices,indices] = extractContour3D(vertices, normal, indices)
     
     %Extend back to 3D
     vertices(:,3) = 0;
+    %Extract depth?
+    %depth = mean(originalVertices(:,3));
+    %vertices(:,3) = depth;
     
     %Change basis back
     vertices = matrixMultByRow(vertices, B);

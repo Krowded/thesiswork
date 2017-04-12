@@ -26,17 +26,35 @@ function [faceIndexChains, chainLengths] = getChainsOfFaces(faces, indices)
             %Reset search index
             i = 1;
         elseif i == length(indices)
-            %Finished a chain. Reset.
+            %Should have finished a chain. Check if the loop closes and
+            %discard it if it doesn't
+            lastLength = chainLengths(currentChain) - 1;
+            endIndex = length(faceChains);
+            firstFaceInChain = faces(faceChains(endIndex-lastLength),:);
+            lastFaceInChain = faces(faceChains(endIndex),:);
+            facesAreTouching = checkFacesTouching(firstFaceInChain, lastFaceInChain);
+            if ~facesAreTouching || chainLengths(currentChain) < 3 %Discard last chain 
+                faceChains((endIndex-lastLength):end) = [];
+            else %Move to the next one                
+                currentChain = currentChain + 1;
+            end
+            
+            %Reset for the next chain
+            chainLengths(currentChain) = 1;
             face1Index = indices(1);
             indices(1) = [];
-            currentChain = currentChain + 1;
-            chainLengths(currentChain) = 1;
             faceChains = [ faceChains face1Index ];
             i = 1;
         else
             %No match. Look at next
             i = i + 1;
         end
+    end
+    
+    %Remove trailing index
+    if chainLengths(end) == 1
+        chainLengths(end) = [];
+        faceChains(end) = [];
     end
     
     faceIndexChains = faceChains;

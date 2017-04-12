@@ -5,6 +5,13 @@ function [vertices,indices] = extractSimplifiedContour2D(vertices, optional_indi
     end
 
     [vertices, indices] = extractContour2D(vertices, optional_indices);
-    [vertices, tempIndices] = simplifyContour(vertices, 1:size(vertices,1));
+    
+    %Remove on same line (done in convex hull calculations)
+%     [vertices, tempIndices] = simplifyContour(vertices, 1:size(vertices,1));
+%     indices = indices(tempIndices);
+%     
+    %Remove vertices too close to each other (maybe unnecessary)
+    tempIndices = 1:size(vertices,1);
+    [vertices, ~, tempIndices] = remove2DDuplicatePoints(vertices, tempIndices);
     indices = indices(tempIndices);
 end
