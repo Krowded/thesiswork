@@ -18,17 +18,17 @@ function [vertices,indices] = extractContour3D(vertices, normal, indices)
     vertices = matrixMultByRow(vertices, Binv);
       
     %Flatten to 2D
-    vertices = vertices(:,1:2);
+    flatVertices = vertices(:,1:2);
     
     %Extract contour
-    [vertices, indices] = extractContour2D(vertices, indices);
+    [flatVertices, indices] = extractContour2D(flatVertices, indices);
     
     %Extend back to 3D
-    vertices(:,3) = 0;
+    %flatVertices(:,3) = 0;
     %Extract depth?
-    %depth = mean(originalVertices(:,3));
-    %vertices(:,3) = depth;
+    depth = getMiddleOfObjectDepth(vertices(indices,:), [0,0,1]);
+    flatVertices(:,3) = depth;
     
     %Change basis back
-    vertices = matrixMultByRow(vertices, B);
+    vertices = matrixMultByRow(flatVertices, B);
 end

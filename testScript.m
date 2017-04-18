@@ -1,72 +1,54 @@
 %Get wall
-[vert, face] = read_ply('backtop.ply');
+[vert, face] = read_ply('3dhome/wallFront.ply');
 
 %Set normal (TODO)
 normal = [-1,0,0];
+up = [0, 1, 0];
+groundLevel = min(vert*up');
 
 %Get contour
 [door, doorface] = read_ply('door.ply');
 doorcon = read_ply('doorcon.ply');
+doorconSlots = slotsFromModel(doorcon, normal);
 doorcon = extractSimplifiedContour3D(doorcon, normal);
 
-%Move contour to nice place (slot fitting and scaling later)
-T = [ 1, 0, 0, -100;
-      0, 1, 0,  5;
-      0, 0, 1,  0;
-      0, 0, 0,  1];
-for i = 1:size(doorcon,1)
-    temp = [doorcon(i,:), 1];
-    temp = (T*temp')';
-    doorcon(i,:) = temp(1:3);
-end
-doorconFront =  doorcon;
-doorconBack = doorcon;
+%Wall slot placement
+wallcon = read_ply('shittydoor.ply');
+wallSlots = slotsFromModel(wallcon,normal);
 
-% %Adjust front depth
+%Slot fitting
+[regParams,Bfit,ErrorStats] = absor(doorconSlots',wallSlots', 'doScale', 1, 'doTrans', 1);
+M = regParams.M;
+doorcon = applyTransformation(doorcon, M);
+
+%Check if any below ground and move them up 
+% [Expand this to keep things inside target walls entirely]
+% [Alternatively allow for a lot of non-uniform scaling]
+t = constrainAboveGround(doorcon, up, groundLevel);
+T = getTranslationMatrixFromVector(t);
+doorcon = applyTransformation(doorcon,T);
+M = T*M;
+
+%Create new vertices for front and back part of wall
 normals = calculateNormals(vert, face);
-frontFaces = getSameDirectionFaceIndices(normals, normal);
-intersectedFaces = raysFacesIntersect(vert, face, doorconFront, normal, 1, frontFaces);
-depth = mean(vert(unique(face(intersectedFaces,:)),:)*normal');
-if isempty(intersectedFaces)
-    warning('no intersected faces')
-    depth = 0;
-end
-doorconFront = doorconFront - normal.*(doorconFront*normal') + normal.*depth;
-%Adjust back depth
-backFaces = getSameDirectionFaceIndices(normals, -normal);
-intersectedFaces = raysFacesIntersect(vert, face, doorconBack, -normal, 1, backFaces);
-depth = mean(vert(unique(face(intersectedFaces,:)),:)*normal');
-if isempty(intersectedFaces)
-    warning('no intersected faces')
-    depth = 0;
-end
-doorconBack = doorconBack - normal.*(doorconBack*normal') + normal.*depth;
+frontDepth = getDepthOfSurface(doorcon, vert, face, normals, normal);
+backDepth = -getDepthOfSurface(doorcon, vert, face, normals, -normal); %Negative normal gives negative depth
+doorconFront = doorcon - normal.*(doorcon*normal') + normal.*frontDepth;
+doorconBack = doorcon - normal.*(doorcon*normal') + normal.*backDepth;
 
-% %Find previous holes in the wall
-% [holeIndices, lengthsOfHoles] = findHoles(vert,face,normal);
-% holesToRemove = [];
-% [holeIndices, lengthsOfHoles] = removeHoles(holeIndices, lengthsOfHoles, holesToRemove);
-holeIndices = [];%realignHoleIndices(vert, holeIndices, lengthsOfHoles, normal);
+%Set up list of holes
+holeIndices = [];
 lengthsOfHoles = [];
 
 %Insert door contour into list of holes
-holeIndices = [holeIndices; ((size(vert,1)+1):(size(vert,1)+(2*size(doorcon,1))))'];
-lengthsOfHoles = [lengthsOfHoles size(doorcon,1)];
-vert = [vert; doorconFront; doorconBack];
+doorconHoleVertices = [doorconFront; doorconBack];
+[vert, holeIndices, lengthsOfHoles] = insertNewHole(vert, holeIndices, lengthsOfHoles, doorconHoleVertices);
 
 %Retriangulate
 [vert,face] = createNewHoles(vert, face, holeIndices, lengthsOfHoles, normal); %We lose non-hole vertices. Look into it!
 
-T = [ 1, 0, 0, -1;
-      0, 1, 0,  5;
-      0, 0, 1,  0;
-      0, 0, 0,  1];
-for i = 1:size(door,1)
-    temp = [door(i,:), 1];
-    temp = (T*temp')';
-    door(i,:) = temp(1:3);
-end
-
+%Insert door model
+door = applyTransformation(door, M);
 face = [face; doorface+size(vert,1)];
 vert = [vert; door];
 

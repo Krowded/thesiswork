@@ -1,4 +1,4 @@
 profile clear
 profile on
-testScript
+testScript3
 profile viewer

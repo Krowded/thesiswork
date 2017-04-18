@@ -7,18 +7,27 @@ function [faces] = constrainedDelaunayTriangulation(vertices, vertexIndices, edg
     vertices = matrixMultByRow(vertices(vertexIndices,:),Binv);
     flattenedVertices = vertices(:,1:2);
     
-    %Translate the indices of edges
+    %Move edge indices to current values
     tempEdges = edges;
     for i = 1:length(vertexIndices)
         tempEdges(edges(:) == vertexIndices(i)) = i;
     end
     edges = tempEdges;
     
+    %Remove duplicates
+    [flattenedVertices, edges, remainingIndices] = remove2DDuplicatePoints(flattenedVertices, edges);
+    vertexIndices = vertexIndices(remainingIndices);
+    
     %Retriangulate
-    constrainedTriangulation = delaunayTriangulation(flattenedVertices, edges);
-    %Exclude things inside of the edges
-    outside = ~isInterior(constrainedTriangulation);
-    faces = constrainedTriangulation.ConnectivityList(outside,:);
+    if isempty(edges) %Unconstrained       
+        triangulation = delaunayTriangulation(flattenedVertices);
+        faces = triangulation.ConnectivityList;
+    else %Constrained
+        constrainedTriangulation = delaunayTriangulation(flattenedVertices, edges);
+        %Exclude things inside of the edges
+        outside = ~isInterior(constrainedTriangulation);
+        faces = constrainedTriangulation.ConnectivityList(outside,:);
+    end
     
     %Restore indices to correct values
     tempFaces = faces;
