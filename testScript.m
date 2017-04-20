@@ -31,8 +31,8 @@ M = T*M;
 
 %Create new vertices for front and back part of wall
 normals = calculateNormals(vert, face);
-frontDepth = getDepthOfSurface(doorcon, vert, face, normals, normal);
-backDepth = -getDepthOfSurface(doorcon, vert, face, normals, -normal); %Negative normal gives negative depth
+frontDepth = getDepthOfSurface(doorcon, vert, normal);
+backDepth = -getDepthOfSurface(doorcon, vert, -normal); %Negative normal gives negative depth
 doorconFront = doorcon - normal.*(doorcon*normal') + normal.*frontDepth;
 doorconBack = doorcon - normal.*(doorcon*normal') + normal.*backDepth;
 

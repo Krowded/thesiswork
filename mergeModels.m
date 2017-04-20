@@ -1,4 +1,10 @@
-function [mergedVertices, mergedFaces] = mergeModels(model1Vertices, model1Faces, model2Vertices, model2Faces)
-    mergedVertices = [model1Vertices; model2Vertices];    
-    mergedFaces = [model1Faces; model2Faces + size(model1Vertices,1)];
+%Appends one model to another
+%Keeps all other values from the first model in the list
+function [model] = mergeModels(models)
+    model = models(1);
+    for i = 2:length(models)
+        model.faces = [model.faces; models(i).faces + size(model.vertices,1)];
+        model.vertices = [model.vertices; models(i).vertices];
+        model.faceNormals = [model.faceNormals; models(i).faceNormals];
+    end
 end
