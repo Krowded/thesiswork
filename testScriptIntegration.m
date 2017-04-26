@@ -20,6 +20,7 @@ newRoofStruct = matchModels(newRoofStruct, baseRoofStruct, 'non-uniform');
 lowestChangableHeight = min(baseRoofStruct.slots*baseRoofStruct.upVector');
 changedAndNewIndices = cell(1,length(foundationStructs));
 for i = 1:length(foundationStructs)
+    %TODO: CHANGE CURVE CALCULATION TO LINE-TRIANGLE INTERSECTION WITH A SUBSET OF FACES FOR EXACT VALUES (PROBABLY SLOWER WAY)
     curveStruct = getCurveUnderRoof(newRoofStruct, foundationStructs(i));
     curveStructs(i) = curveStruct;
     [foundationStructs(i), changedAndNewIndices{i}] = fitWallToRoofCurve(foundationStructs(i), lowestChangableHeight, curveStruct.curveFunction, curveStruct.curveLength);

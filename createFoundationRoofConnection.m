@@ -32,7 +32,7 @@ function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct
     foundationStruct.frontIndices = interestingFoundationVertexIndices';
     endIndex = size(foundationStruct.vertices,1);
         %Add second set of vertices (all "walls" are two sided)
-    foundationStruct.vertices = [foundationStruct.vertices; foundationStruct.vertices(interestingFoundationVertexIndices,:) - 0.001*up];
+    foundationStruct.vertices = [foundationStruct.vertices; foundationStruct.vertices(interestingFoundationVertexIndices,:) - 0.01*up];
     foundationStruct.backIndices = ((endIndex+1):size(foundationStruct.vertices))';
     foundationStruct.frontNormal = up;
     %Carve hole in roof

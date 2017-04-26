@@ -43,6 +43,6 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
         midpoint = (point2 - point1)/2 + point1;
         y = midpoint(2);
         curveY = curveFunction(midpoint(1));
-        isAboveCurve = y > curveY;
+        isAboveCurve = isnan(y) || y > curveY;
     end
 end

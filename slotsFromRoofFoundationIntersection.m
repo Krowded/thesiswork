@@ -27,10 +27,12 @@ function slotVertices = slotsFromRoofFoundationIntersection(roofStruct, foundati
     %Corner values
     x = foundationPointsAboveLimit*xaxis';
     z = foundationPointsAboveLimit*zaxis';
-    minX = min(x);
-    maxX = max(x);
-    minZ = min(z);
-    maxZ = max(z);
+    margin = 0.1;
+    warning('having a hardcoded margin is weird')
+    minX = min(x) - margin;
+    maxX = max(x) + margin;
+    minZ = min(z) - margin;
+    maxZ = max(z) + margin;
     
     %Preallocate
     slotVertices = zeros(8,3);

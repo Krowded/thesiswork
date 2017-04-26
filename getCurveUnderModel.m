@@ -58,15 +58,9 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     %Length of curve is equal to number of x points
     curveLength = size(x,1);
     
-%     Value outside curve equal to height of closest slot
-%     closestSlots = curveModel.slots(slotIndicesByDepth(1:4),:);
-%     [~, byHeight] = sort(closestSlots*ydirection', 'ascend');
-%     closestLowSlots = closestSlots(byHeight(1:2),:);
-%     [extrapolationPointsX, byX] = sort(closestLowSlots*xdirection', 'ascend');
-%     extrapolationPointsY = closestLowSlots(byX, :)*ydirection';
-%     halfwayPoint = (extrapolationPointsX(1) + extrapolationPointsX(2))/2;
-%      
-%     Return curve function
-%     curve = @(xq) customInterpolation(x, y, xq, extrapolationPointsY, halfwayPoint);
-    curve = @(xq) interp1(x,y,xq,'linear');
+    if curveLength < 2 %Return NaN if too many points got removed
+        curve = @(xq) NaN;
+    else
+        curve = @(xq) interp1(x,y,xq,'linear');
+    end
 end
