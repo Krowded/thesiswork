@@ -20,7 +20,7 @@ function curveVertices = getWallCurve(wallStruct)
     
     %Last one
     edge = flattenedVertices(1,:) - flattenedVertices(end,:);
-    if edge(2) > 0 &&
+    if edge(2) > 0
         curveVertices(end+1) = flattenedVertices(1,:);
     end
     

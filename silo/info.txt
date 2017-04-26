@@ -1,0 +1,41 @@
+foundation
+1 filename wallFront.ply 
+1 normal 0 0 -1
+1 up 0 1 0
+2 filename wallLeft.ply 
+2 normal -1 0 0
+2 up 0 1 0
+2 connection ladderbig
+3 filename wallRight.ply 
+3 normal 1 0 0
+3 up 0 1 0
+3 connection laddersmall
+4 filename wallBack.ply 
+4 normal 0 0 1
+4 up 0 1 0
+.
+roof
+1 filename roof.ply 
+1 normal 0 0 -1
+1 up 0 1 0
+.
+pipe
+1 filename pipe.ply
+1 normal -1 0 0
+1 up 0 1 0
+.
+ladderbig
+1 filename ladderbig.ply
+1 normal -1 0 0
+1 up 0 1 0
+.
+platform
+1 filename platform.ply
+1 normal -1 0 0
+1 up 0 1 0
+.
+laddersmall
+1 filename laddersmall.ply
+1 normal 1 0 0
+1 up 0 1 0
+.

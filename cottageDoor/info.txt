@@ -1,0 +1,7 @@
+door
+1 filename cottageDoor.ply
+1 normal 1 0 0
+1 up 0 0 1
+shape cottageDoorContour.ply
+type cut
+.
