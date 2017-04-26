@@ -1,12 +1,19 @@
-function slotVertices = slotsFromRoofFoundationIntersection(roofVertices, foundationVertices, normal, up)
-    zaxis = normal;
-    yaxis = up;
-    xaxis = normalize(cross(up,normal));
+function slotVertices = slotsFromRoofFoundationIntersection(roofStruct, foundationStructs)
+    %Collect all vertices in one array
+    foundationVertices = [];
+    for i = 1:length(foundationStructs)
+        foundationVertices = [foundationVertices; foundationStructs(i).vertices];
+    end
 
-    roofHeights = roofVertices*yaxis';
+    zaxis = foundationStructs(1).frontNormal;
+    yaxis = foundationStructs(1).upVector;
+    xaxis = normalize(cross(yaxis,zaxis));
+
+    roofHeights = roofStruct.vertices*yaxis';
     foundationHeights = foundationVertices*yaxis';
     
-    foundationHighestPoint = max(foundationHeights);
+    %foundationHighestPoint = max(foundationHeights);
+    roofHighestPoint = max(roofHeights);
     roofLowestPoint = min(roofHeights);
     margin = 0.001;
     heightLimit = roofLowestPoint - margin;
@@ -33,7 +40,7 @@ function slotVertices = slotsFromRoofFoundationIntersection(roofVertices, founda
     slotVertices(2,:) = maxX*xaxis + maxZ*zaxis;
     slotVertices(3,:) = maxX*xaxis + maxZ*zaxis;
     slotVertices(4,:) = minX*xaxis + maxZ*zaxis;
-    slotVertices(1:2,:) = slotVertices(1:2,:) + foundationHighestPoint*yaxis;
+    slotVertices(1:2,:) = slotVertices(1:2,:) + roofHighestPoint*yaxis;
     slotVertices(3:4,:) = slotVertices(3:4,:) + roofLowestPoint*yaxis;
     
     %Front slots
@@ -41,6 +48,6 @@ function slotVertices = slotsFromRoofFoundationIntersection(roofVertices, founda
     slotVertices(6,:) = maxX*xaxis + minZ*zaxis;
     slotVertices(7,:) = maxX*xaxis + minZ*zaxis;
     slotVertices(8,:) = minX*xaxis + minZ*zaxis;
-    slotVertices(5:6,:) = slotVertices(5:6,:) + foundationHighestPoint*yaxis;
+    slotVertices(5:6,:) = slotVertices(5:6,:) + roofHighestPoint*yaxis;
     slotVertices(7:8,:) = slotVertices(7:8,:) + roofLowestPoint*yaxis;
 end

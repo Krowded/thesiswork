@@ -1,9 +1,35 @@
-%Returns a curve function representing the curve under the vertices as seen 
-%from the z direction
-function curve = getCurveUnderModel(vertices, xdirection, ydirection, zdirection)
+%Returns a curve function representing the curve under the model at the
+%position of positionModel
+function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
+    ydirection = positionModel.upVector;
+    zdirection = positionModel.frontNormal;
+    xdirection = normalize(cross(ydirection, zdirection));
+    
+    %Keep only points around the top of positionModel
+    highestPoints = getTopPercentOfPoints(positionModel.vertices, ydirection, 10);
+    positionModelDepths = highestPoints*zdirection';
+    minDepth = min(positionModelDepths);
+    maxDepth = max(positionModelDepths);
+    
+    curveModelDepths = curveModel.vertices*zdirection';
+    margin = abs((max(curveModelDepths) - min(curveModelDepths))/50);
+    verticesAroundPosition = curveModelDepths > (minDepth-margin) & curveModelDepths < (maxDepth+margin);
+    vertices = curveModel.vertices(verticesAroundPosition, :);
+    
+    %If roof was too simple, just grab all vertices towards the edge
+    if isempty(vertices)
+        vertices = curveModel.vertices(curveModelDepths > minDepth,:);
+        
+        %If still empty, just grab all vertices
+        if isempty(vertices)
+            error('No curve vertices found')
+        end
+    end
+    
     %Change basis
     B = [xdirection', ydirection', zdirection'];
-    vertices = changeBasis(vertices, B);
+    B = inv(B);
+    vertices = matrixMultByRow(vertices, B);
     
     %Sort by 'x'
     flatVertices = sortrows(vertices(:,1:2), 1);
@@ -14,7 +40,7 @@ function curve = getCurveUnderModel(vertices, xdirection, ydirection, zdirection
         thisX = flatVertices(i,1);
         nextX = flatVertices(i+1,1);
 
-        %If very close to each other, remove the bigger one
+        %If very close to each other, remove the higher one
         if abs(thisX - nextX) < 0.001
             thisY = flatVertices(i,2);
             nextY = flatVertices(i+1,2);
@@ -29,6 +55,18 @@ function curve = getCurveUnderModel(vertices, xdirection, ydirection, zdirection
     x = flatVertices(:,1);
     y = flatVertices(:,2);
        
-    %Calculate curve function
-    curve = @(xq) interp1(x, y, xq);
+    %Length of curve is equal to number of x points
+    curveLength = size(x,1);
+    
+%     Value outside curve equal to height of closest slot
+%     closestSlots = curveModel.slots(slotIndicesByDepth(1:4),:);
+%     [~, byHeight] = sort(closestSlots*ydirection', 'ascend');
+%     closestLowSlots = closestSlots(byHeight(1:2),:);
+%     [extrapolationPointsX, byX] = sort(closestLowSlots*xdirection', 'ascend');
+%     extrapolationPointsY = closestLowSlots(byX, :)*ydirection';
+%     halfwayPoint = (extrapolationPointsX(1) + extrapolationPointsX(2))/2;
+%      
+%     Return curve function
+%     curve = @(xq) customInterpolation(x, y, xq, extrapolationPointsY, halfwayPoint);
+    curve = @(xq) interp1(x,y,xq,'linear');
 end

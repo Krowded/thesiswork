@@ -1,7 +1,7 @@
 % Returns indices of faces that the rays intersect
 % If bothDirections is set to true it does line intersection instead of ray
 % intersection
-function [intersectedFaces] = raysFacesIntersect(vertices, faces, points, direction, optional_lineIntersection, optional_faceIndices)
+function [intersectedFaceIndices] = raysFacesIntersect(vertices, faces, points, direction, optional_lineIntersection, optional_faceIndices)
     %Adjust for optional arguments
     if nargin < 5
         optional_lineIntersection = 0;
@@ -12,7 +12,7 @@ function [intersectedFaces] = raysFacesIntersect(vertices, faces, points, direct
     
     direction = normalize(direction);
     faces = faces(optional_faceIndices,:);
-    intersectedFaces = NaN(size(faces,1));
+    intersectedFaceIndices = NaN(size(faces,1));
     depthOfIntersections = NaN(size(faces,1));
     currentIndex = 1;
 
@@ -52,7 +52,7 @@ function [intersectedFaces] = raysFacesIntersect(vertices, faces, points, direct
 
             %If line intersection is all we care about
             if optional_lineIntersection
-                intersectedFaces(currentIndex) = i;
+                intersectedFaceIndices(currentIndex) = i;
                 currentIndex = currentIndex + 1;
                 continue;
             end
@@ -62,7 +62,7 @@ function [intersectedFaces] = raysFacesIntersect(vertices, faces, points, direct
 
             if (lengthToIntersection > 0.00001) %Ray intersection
                 depthOfIntersections(currentIndex) = lengthToIntersection;
-                intersectedFaces(currentIndex) = i;
+                intersectedFaceIndices(currentIndex) = i;
                 currentIndex = currentIndex + 1;
                 break; %One ray intersecting is enough. Check next face
             else % Intersects line in other direction
@@ -72,13 +72,13 @@ function [intersectedFaces] = raysFacesIntersect(vertices, faces, points, direct
     end
     
     %Clear out crap and return
-    intersectedFaces = intersectedFaces(~isnan(intersectedFaces));
+    intersectedFaceIndices = intersectedFaceIndices(~isnan(intersectedFaceIndices));
     if ~optional_lineIntersection
         depthOfIntersections = depthOfIntersections(~isnan(depthOfIntersections));
         [~,i] = sort(depthOfIntersections, 1, 'ascend');
-        intersectedFaces = optional_faceIndices(intersectedFaces(i));
+        intersectedFaceIndices = optional_faceIndices(intersectedFaceIndices(i));
     else
-        intersectedFaces = optional_faceIndices(intersectedFaces);
+        intersectedFaceIndices = optional_faceIndices(intersectedFaceIndices);
     end
     
 end

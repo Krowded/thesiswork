@@ -7,5 +7,5 @@ function [baseTransformationMatrix] = getBaseTransformationMatrix(normal)
      end
      base1 = normalize(cross(normal, temp));
      base2 = normalize(cross(normal, base1));
-     baseTransformationMatrix = [base1; base2; normal];
+     baseTransformationMatrix = [base1' base2' normal'];
 end

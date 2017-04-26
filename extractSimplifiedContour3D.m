@@ -7,15 +7,10 @@ function [vertices,indices] = extractSimplifiedContour3D(vertices, normal, optio
         vertices = vertices(optional_indices,:);
     end
     
-    %Normalize for safety
-    normal = normalize(normal);
-    
-    %Change basis
+    %Flatten vertices
     B = getBaseTransformationMatrix(normal);
     Binv = inv(B);
     vertices = matrixMultByRow(vertices, Binv);
-      
-    %Flatten to 2D
     flatVertices = vertices(:,1:2);
 
     %Extract contour

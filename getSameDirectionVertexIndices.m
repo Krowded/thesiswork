@@ -2,5 +2,5 @@
 %direction as normal
 function indices = getSameDirectionVertexIndices(faces, normals, normal)
     frontFaces = getSameDirectionFaceIndices(normals, normal);
-    indices = unique(faces(frontFaces,:));    
+    indices = unique(faces(frontFaces,:));   
 end

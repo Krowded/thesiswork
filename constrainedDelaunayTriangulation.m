@@ -2,7 +2,7 @@
 %vertexIndices by flattening them in the normal direction
 function [faces] = constrainedDelaunayTriangulation(vertices, vertexIndices, edges, normal)
     flattenedVertices = flattenVertices(vertices(vertexIndices,:), normal);
-    
+
     %Move edge indices to current values
     tempEdges = edges;
     for i = 1:length(vertexIndices)
@@ -16,13 +16,19 @@ function [faces] = constrainedDelaunayTriangulation(vertices, vertexIndices, edg
     
     %Retriangulate
     if isempty(edges) %Unconstrained       
-        triangulation = delaunayTriangulation(flattenedVertices);
-        faces = triangulation.ConnectivityList;
+        unconstrainedTriangulation = delaunayTriangulation(flattenedVertices);
+        faces = unconstrainedTriangulation.ConnectivityList;
     else %Constrained
         constrainedTriangulation = delaunayTriangulation(flattenedVertices, edges);
         %Exclude things inside of the edges
         outside = ~isInterior(constrainedTriangulation);
         faces = constrainedTriangulation.ConnectivityList(outside,:);
+        
+        global DEBUG;
+        if DEBUG == 1
+            DT = triangulation(faces, constrainedTriangulation.Points);
+            triplot(DT);
+        end
     end
     
     %Restore indices to correct values
