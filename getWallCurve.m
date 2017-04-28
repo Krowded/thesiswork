@@ -4,7 +4,7 @@ function curveStruct = getWallCurve(wallStruct)
     sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontNormal));
     vertices = wallStruct.vertices;
     vertices = getTopPercentOfPoints(vertices, sideVector, 10);    
-    curveVertices = getCurveVertices(vertices, sideVector, wallStruct.upVector);
+    curveVertices = getCurveVertices(vertices, -sideVector, wallStruct.upVector);
     
     %Normalize so the highest point is at 100 and the lowest at 0
     [maxY, i] = max(curveVertices(:,2));

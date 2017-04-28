@@ -13,23 +13,20 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     curveVertices = [];
     for j = 1:(size(flattenedVertices,1)-1)
         edge = flattenedVertices(j+1,:) - flattenedVertices(j,:);
-        if edge(2) < 0
+        if edge(2) > 0
             curveVertices(end+1,:) = flattenedVertices(j,:);
         end
     end
     
     %Last one
     edge = flattenedVertices(1,:) - flattenedVertices(end,:);
-    if edge(2) < 0
+    if edge(2) > 0
         curveVertices(end+1,:) = flattenedVertices(1,:);
     end
     
-    %Top and bottom tend to have leftovers from the contour. Weed them out.
-    betterpcshow([curveVertices, zeros(size(curveVertices,1),1)])
-    
+    %Top and bottom tend to have leftovers from the contour. Weed them out.    
     curveVertices = removeTail(curveVertices, 'ascend');
     curveVertices = removeTail(curveVertices, 'descend');
-    betterpcshow([curveVertices, zeros(size(curveVertices,1),1)])
     
     function vertices = removeTail(vertices, direction)
         [~, I] = sort(vertices(:,2), 1, direction);
