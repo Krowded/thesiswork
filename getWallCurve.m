@@ -45,6 +45,7 @@ function curveStruct = getWallCurve(wallStruct)
     curveStruct.curveFunction = @(xq) interp1(curveVertices(:,2), curveVertices(:,1), xq, 'linear', 'extrap');
     curveStruct.curveLength = size(curveVertices);
     curveStruct.span = max(curveVertices(:,1) - min(curveVertices(:,1)));
+    curveStruct.normal = wallStruct.frontNormal;
     
     function vertices = removeTail(vertices, direction)
         [~, I] = sort(vertices(:,2), 1, direction);
