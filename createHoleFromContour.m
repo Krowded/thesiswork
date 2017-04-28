@@ -8,5 +8,5 @@ function [wallStruct, holeStruct] = createHoleFromContour(wallStruct, contour)
     contourBack = contour - normal.*(contour*normal') + normal.*backDepths;
 
     %Insert contour into list of holes
-    [wallStruct.vertices, holeStruct] = insertNewHole(wallStruct.vertices, contourFront, contourBack);
+    [wallStruct, holeStruct] = insertNewHole(wallStruct, contourFront, contourBack);
 end

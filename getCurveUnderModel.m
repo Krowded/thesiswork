@@ -16,23 +16,21 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     verticesAroundPosition = curveModelDepths > (minDepth-margin) & curveModelDepths < (maxDepth+margin);
     vertices = curveModel.vertices(verticesAroundPosition, :);
     
+    %vertices = curveModel.vertices(curveModelDepths > minDepth,:);
     %If roof was too simple, just grab all vertices towards the edge
     if isempty(vertices)
         vertices = curveModel.vertices(curveModelDepths > minDepth,:);
         
         %If still empty, just grab all vertices
         if isempty(vertices)
-            error('No curve vertices found')
+            warning('No curve vertices found, returning NaN function')
+            curveLength = 0;
+            curve = @(xq) NaN;
+            return;
         end
     end
     
-    %Change basis
-    B = [xdirection', ydirection', zdirection'];
-    B = inv(B);
-    vertices = matrixMultByRow(vertices, B);
-    
-    %Sort by 'x'
-    flatVertices = sortrows(vertices(:,1:2), 1);
+    flatVertices = sortrows(getCurveVertices(vertices, zdirection, ydirection),1);
     
     %Remove points with the same x value
     i = 1;
