@@ -15,7 +15,8 @@ function [faces] = constrainedDelaunayTriangulation(vertices, vertexIndices, edg
     vertexIndices = vertexIndices(remainingIndices);
     
     %Retriangulate
-    if isempty(edges) %Unconstrained       
+    if isempty(edges) %Unconstrained
+        %betterpcshow([flattenedVertices, zeros(size(flattenedVertices,1),1)])
         unconstrainedTriangulation = delaunayTriangulation(flattenedVertices);
         faces = unconstrainedTriangulation.ConnectivityList;
     else %Constrained

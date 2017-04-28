@@ -40,4 +40,6 @@ function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, fron
     modelStruct.connections = connections;
     modelStruct.upVector = upVector;
     modelStruct.attributes = attributes;
+    modelStruct.cornerIndicesLeft = [];
+    modelStruct.cornerIndicesRight = [];
 end

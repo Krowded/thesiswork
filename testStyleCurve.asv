@@ -16,14 +16,28 @@ end
 
 %Make a new foundation
 %foundationStructs = buildSquareFoundation(20000, 10000, 2000);
-foundationStructs = buildAnySidedFoundation(4, 40000, 10000, 10000);
+foundationStructs = buildAnySidedFoundation(5, 10000, 10000, 2000);
 
-maxIndex = length(foundationStructs);
-[foundationStructs(1), foundationStructs(maxIndex), foundationStructs(2)] = curveWallTimesFour(foundationStructs(1), foundationStructs(maxIndex), foundationStructs(2), curves, [0, 0, 1]);
-for i = 2:maxIndex-1
+%Transfer curves
+% foundationStructs(1) = curveLeftCorner(foundationStructs(1), curves(4).curveFunction);
+% for i = 1:4
+%     if i > 1
+%         foundationStructs(i) = curveLeftCorner(foundationStructs(i), curves(i-1).curveFunction);
+%     end
+% 
+%     foundationStructs(i) = curveWall(foundationStructs(i), curves(i).curveFunction);
+% 
+%     if i < 4
+%         foundationStructs(i) = curveRightCorner(foundationStructs(i), curves(i+1).curveFunction);
+%     end
+% end
+% foundationStructs(4) = curveRightCorner(foundationStructs(4), curves(1).curveFunction);
+
+[foundationStructs(1), foundationStructs(4), foundationStructs(2)] = curveWallTimesFour(foundationStructs(1), foundationStructs(4), foundationStructs(2), curves, [0, 0, 1]);
+for i = 2:3
     [foundationStructs(i), foundationStructs(i-1), foundationStructs(i+1)] = curveWallTimesFour(foundationStructs(i), foundationStructs(i-1), foundationStructs(i+1), curves, [0, 0, 1]); 
 end
-[foundationStructs(maxIndex), foundationStructs(maxIndex-1), foundationStructs(1)] = curveWallTimesFour(foundationStructs(maxIndex), foundationStructs(maxIndex-1), foundationStructs(1),  curves, [0, 0, 1]);
+[foundationStructs(4), foundationStructs(3), foundationStructs(1)] = curveWallTimesFour(foundationStructs(1),  curves, [0, 0, 1]);
 
 
 foundationStruct = mergeModels(foundationStructs);

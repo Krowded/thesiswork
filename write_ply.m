@@ -111,8 +111,8 @@ end
 
 if fid == -1, error(Msg); end
 
-PlyTypeNames = {'char','uchar','short','ushort','int','uint','float','double', ...
-   'char8','uchar8','short16','ushort16','int32','uint32','float32','double64'};
+PlyTypeNames = {'char','uchar','short','ushort','int','uint','float','double',... 
+    'char8','uchar8','short16','ushort16','int32','uint32','float32','double64'}; %these don't work properly...
 FWriteTypeNames = {'schar','uchar','int16','uint16','int32','uint32','single','double'};
 MatlabTypeNames = {'int8','uint8','int16','uint16','int32','uint32','single','double'};
 PrintfTypeChar = {'%d','%u','%d','%u','%d','%u','%-.6f','%-.14e'};
@@ -216,7 +216,8 @@ for i = 1:NumElements
       end
       
       if Type{i}(j) <= 8
-         fprintf(fid,'property %s %s\n',PlyTypeNames{Type{i}(j)},PropertyNames{i}{j});
+         %fprintf(fid,'property %s %s\n',PlyTypeNames{Type{i}(j)},PropertyNames{i}{j});
+         fprintf(fid,'property float %s\n',PropertyNames{i}{j});
       else
          %fprintf(fid,'property list uchar %s %s\n',PlyTypeNames{Type{i}(j)-9},PropertyNames{i}{j});
          %Quick fix, it breaks when more than 128 vertices
