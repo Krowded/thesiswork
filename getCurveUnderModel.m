@@ -3,7 +3,6 @@
 function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     ydirection = positionModel.upVector;
     zdirection = positionModel.frontNormal;
-    xdirection = normalize(cross(ydirection, zdirection));
     
     %Keep only points around the top of positionModel
     highestPoints = getTopPercentOfPoints(positionModel.vertices, ydirection, 10);
@@ -16,7 +15,6 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     verticesAroundPosition = curveModelDepths > (minDepth-margin) & curveModelDepths < (maxDepth+margin);
     vertices = curveModel.vertices(verticesAroundPosition, :);
     
-    %vertices = curveModel.vertices(curveModelDepths > minDepth,:);
     %If roof was too simple, just grab all vertices towards the edge
     if isempty(vertices)
         vertices = curveModel.vertices(curveModelDepths > minDepth,:);
@@ -30,6 +28,7 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
         end
     end
     
+    %Sort by x
     flatVertices = sortrows(getCurveVertices(vertices, zdirection, ydirection),1);
     
     %Remove points with the same x value
@@ -47,7 +46,7 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
             continue;
         end
         i = i + 1;
-    end
+    end    
     
     %Get x and y
     x = flatVertices(:,1);

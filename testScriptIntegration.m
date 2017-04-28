@@ -73,7 +73,7 @@ doorMagicStruct.vertices = applyTransformation(doorMagicStruct.vertices, M);
 %foundationStruct = ([foundationStruct doorMagicStruct]);
 
 %Merge in roof
-fullHouseStruct = mergeModels([foundationStruct newRoofStruct]);
+foundationStruct = mergeModels([foundationStruct newRoofStruct]);
 
 %Output
-write_ply(fullHouseStruct.vertices, fullHouseStruct.faces,'test.ply','ascii');
+write_ply(foundationStruct.vertices, foundationStruct.faces,'test.ply','ascii');

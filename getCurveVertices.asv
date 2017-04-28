@@ -1,12 +1,9 @@
 function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     vertices = changeBasis(vertices, zdirection, ydirection);
     flattenedVertices = vertices(:,1:2);
-    flattenedVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
-    
-    %Using some configuration of alpha shapes might be better. For now,
-    %boundary is fine
-%     shape = alphaShape(flattenedVertices(:,1), flattenedVertices(:,2));
-%     flattenedVertices = shape.Points;
+    %flattenedVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
+    shape = alphaShape(flattenedVertices(:,1), flattenedVertices(:,2));
+    flattenedVertices = shape.Points;
 
     %Since flattened vertices are in winding order, we can just check the
     %sign of the vector between two consecutive points
@@ -18,10 +15,11 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
         end
     end
     
+    curveVertices(end)
     %Last one
     edge = flattenedVertices(1,:) - flattenedVertices(end,:);
     if edge(2) < 0
-        curveVertices(end+1,:) = flattenedVertices(1,:);
+        curveVertices(end+1) = flattenedVertices(1,:);
     end
     
     %Top and bottom tend to have leftovers from the contour. Weed them out.
