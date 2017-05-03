@@ -1,3 +1,6 @@
+style
+cottage
+.
 door
 1 filename cottageDoor.ply
 1 normal 1 0 0

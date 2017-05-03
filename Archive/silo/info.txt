@@ -1,3 +1,6 @@
+style
+farm
+.
 foundation
 1 filename wallFront.ply 
 1 normal 0 0 -1

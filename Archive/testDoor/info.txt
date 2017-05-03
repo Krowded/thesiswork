@@ -1,3 +1,6 @@
+style
+basic
+.
 door
 1 filename door.ply
 1 normal -1 0 0

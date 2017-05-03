@@ -1,0 +1,15 @@
+D:\School\Thesis\Matlabtest\Archive\cottageDoor\info.txt
+cottage
+.
+D:\School\Thesis\Matlabtest\Archive\silo\info.txt
+farm
+.
+D:\School\Thesis\Matlabtest\Archive\testDoor\info.txt
+basic
+.
+D:\School\Thesis\Matlabtest\Archive\testHouse\info.txt
+basic
+.
+D:\School\Thesis\Matlabtest\Archive\testMagicHouse\info.txt
+magic
+.

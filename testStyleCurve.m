@@ -1,4 +1,4 @@
-magicHouse = loadAndPrepareModelFolder('testMagicHouse');
+magicHouse = loadAndPrepareModelFolder('Archive/testMagicHouse');
 magicFoundationStructs = magicHouse.foundation.models;
 curves = getFoundationCurves(magicFoundationStructs);
 
@@ -59,7 +59,7 @@ door.upVector = [0, 1, 0];
 door.frontNormal = foundationStructs(1).frontNormal;
 door.slots = slotsFromModel(door);
 
-door2 = loadAndPrepareModelFolder('testDoor');
+door2 = loadAndPrepareModelFolder('Archive/testDoor');
 door2 = door2.door;
 shape = door2.shape;
 door2 = door2.models;

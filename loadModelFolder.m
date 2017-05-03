@@ -11,6 +11,15 @@ function returnStructure = loadModelFolder(folderpath)
         partName = fgetl(fileID);
         if ~ischar(partName), fclose(fileID); return; end %Done if EOF
         
+        %SKIP STYLE TAG. TEMPORARY FIX.
+        if strcmp(partName, 'style')
+            line = '';
+            while ~strcmp(line, '.')
+                line = fgetl(fileID);
+            end
+            continue;
+        end
+        
         %Allow for comments
         if startsWith(partName, '//')
             continue;

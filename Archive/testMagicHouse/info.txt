@@ -1,3 +1,6 @@
+style
+magic
+.
 foundation
 // index name normal
 1 filename wallFront.ply 

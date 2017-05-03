@@ -1,9 +1,9 @@
 %Get models
-house3D = loadAndPrepareModelFolder('testHouse');
-magicHouse = loadAndPrepareModelFolder('testMagicHouse');
-door = loadAndPrepareModelFolder('testDoor');
-cottageDoor = loadAndPrepareModelFolder('cottageDoor');
-silo = loadAndPrepareModelFolder('silo');
+house3D = loadAndPrepareModelFolder('Archive\testHouse');
+magicHouse = loadAndPrepareModelFolder('Archive\testMagicHouse');
+door = loadAndPrepareModelFolder('Archive\testDoor');
+cottageDoor = loadAndPrepareModelFolder('Archive\cottageDoor');
+silo = loadAndPrepareModelFolder('Archive\silo');
 
 %%Add roof, adjust foundation
 %3DHome roof
