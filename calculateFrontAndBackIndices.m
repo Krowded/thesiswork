@@ -1,6 +1,6 @@
 function wallStruct = calculateFrontAndBackIndices(wallStruct)
     if isempty(wallStruct.faceNormals)
-        wallStruct.faceNormals = calculateNormals(wallStruct.vertices,wallStruct.faces);
+        wallStruct.faceNormals = calculateNormals(wallStruct.vertices, wallStruct.faces);
     end
     
     wallStruct.frontIndices = getSameDirectionVertexIndices(wallStruct.faces, wallStruct.faceNormals, wallStruct.frontNormal);

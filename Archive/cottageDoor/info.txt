@@ -1,10 +1,8 @@
-style
-cottage
-.
 door
-1 filename cottageDoor.ply
-1 normal 1 0 0
-1 up 0 0 1
+filename cottageDoor.ply
 shape cottageDoorContour.ply
+normal 1 0 0
+up 0 0 1
 type cut
+style cottage
 .

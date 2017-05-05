@@ -1,45 +1,36 @@
-style
-magic
-.
 foundation
-// index name normal
-1 filename wallFront.ply 
-1 normal -1 0 0
-1 up 0 1 0
-1 connection door
-2 filename wallLeft.ply 
-2 normal 0 0 -1
-2 up 0 1 0
-3 filename wallBack.ply 
-3 normal 1 0 0
-3 up 0 1 0
-4 filename wallRight.ply 
-4 normal 0 0 1
-4 up 0 1 0
+filename wallFront.ply normal -1 0 0
+filename wallLeft.ply normal 0 0 -1
+filename wallBack.ply normal 1 0 0
+filename wallRight.ply normal 0 0 1
+normal -1 0 0
+up 0 1 0
+style magic
 .
 roof
-1 filename roofLeft.ply 
-1 normal -1 0 0
-1 up 0 1 0
-1 connection chimney
-2 filename roofRight.ply 
-2 normal -1 0 0
-2 up 0 1 0
+filename roofLeft.ply 
+filename roofRight.ply 
+normal -1 0 0
+up 0 1 0
+style magic
 .
 floor
-1 filename floor.ply 
-1 normal -1 0 0
-1 up 0 1 0
+filename floor.ply
+normal -1 0 0
+up 0 1 0
+style magic
 .
 door
-1 filename door.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename door.ply
+normal -1 0 0
+up 0 1 0
 shape doorcon.ply
 type cut
+style magic
 .
 chimney
-1 filename chimney.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename chimney.ply
+normal -1 0 0
+up 0 1 0
+style magic
 .

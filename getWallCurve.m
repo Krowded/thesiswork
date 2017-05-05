@@ -3,7 +3,7 @@
 function curveStruct = getWallCurve(wallStruct)
     sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontNormal));
     vertices = wallStruct.vertices;
-    vertices = getTopPercentOfPoints(vertices, sideVector, 10);    
+    vertices = getTopPercentOfPoints(vertices, sideVector, 20);
     curveVertices = getCurveVertices(vertices, -sideVector, wallStruct.upVector);
     
     %Normalize so the highest point is at 100 and the lowest at 0
@@ -17,8 +17,9 @@ function curveStruct = getWallCurve(wallStruct)
     
     %Make return struct
     curveStruct.vertices = curveVertices;
-    curveStruct.curveFunction = @(xq) interp1(curveVertices(:,2), curveVertices(:,1), xq, 'linear', 'extrap');
-    curveStruct.curveLength = size(curveVertices);
-    curveStruct.span = max(curveVertices(:,1) - min(curveVertices(:,1)));
+    %curveStruct.curveFunction = @(xq) interp1(curveVertices(:,2), curveVertices(:,1), xq, 'linear', 'extrap');
+    curveStruct.curveFunction = 'linear';
+    curveStruct.curveLength = size(curveVertices,1);
+    curveStruct.span = max(curveVertices(:,1)) - min(curveVertices(:,1));
     curveStruct.normal = wallStruct.frontNormal;
 end

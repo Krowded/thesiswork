@@ -11,22 +11,15 @@ function returnStructure = loadModelFolder(folderpath)
         partName = fgetl(fileID);
         if ~ischar(partName), fclose(fileID); return; end %Done if EOF
         
-        %SKIP STYLE TAG. TEMPORARY FIX.
-        if strcmp(partName, 'style')
-            line = '';
-            while ~strcmp(line, '.')
-                line = fgetl(fileID);
-            end
-            continue;
-        end
-        
         %Allow for comments
         if startsWith(partName, '//')
             continue;
         end
         
-        returnStructure.(partName) = struct('shape', [], 'type', [], 'attributes', string.empty);
-      
+        returnStructure.(partName) = struct('filepaths', [],'shape', [], 'type', [], 'attributes', string.empty);
+        returnStructure.(partName).name = partName;
+        returnStructure.(partName).models = [];
+        
         %Read line by line until '.'
         line = fgetl(fileID);
         while ~strcmp(line, '.')
@@ -39,49 +32,54 @@ function returnStructure = loadModelFolder(folderpath)
             %Divide
             tokens = textscan(line, '%s');
             tokens = tokens{1};
-            [index, isindexed] = str2num(tokens{1});
             
-            if isindexed
-                classifier = lower(tokens{2});
-                switch classifier
-                    case 'filename' %Load model from file
-                        filepath = folderpath + '\' + string(tokens{3});
-                        if ~isfield(returnStructure.(partName), 'models') || length(returnStructure.(partName).models) < index %Append if more than one filename has been given at same index
-                            returnStructure.(partName).models(index) = loadAndMergeModels(filepath);
-                        else
-                            returnStructure.(partName).models(index) = mergeModels([returnStructure.(partName).models(index) loadAndMergeModels(filepath)]);
+            classifier = lower(tokens{1});
+            switch classifier
+                case 'filename' 
+                    %Load model from file
+                    filepath = folderpath + string(tokens{2});
+                    returnStructure.(partName).models = [returnStructure.(partName).models loadAndMergeModels(filepath)];
+                    
+                    %Add filepath to struct
+                    returnStructure.(partName).filepaths = [returnStructure.(partName).filepaths; filepath];
+                    
+                    if length(tokens) > 2 %Only normal allowed at the moment
+                        classifier = tokens{3};
+                        switch classifier
+                            case 'normal'
+                                normal = [str2double(tokens{4}) str2double(tokens{5}) str2double(tokens{6})];
+                                returnStructure.(partName).models(end).frontNormal = normal;
+                            otherwise
+                                error(['Sub-classifier ' classifier ' unknown for type "filename"']);
                         end
-                        
-                    case 'normal' %Set normal
-                        normal = [str2double(tokens{3}) str2double(tokens{4}) str2double(tokens{5})];
-                        returnStructure.(partName).models(index).frontNormal = normal;
-                    case 'up' %Set upVector
-                        up = [str2double(tokens{3}) str2double(tokens{4}) str2double(tokens{5})];
-                        returnStructure.(partName).models(index).upVector = up;
-                    case 'connection' %Specifies what other model is connected to it
-                        %Append the new part
-                        connectedPartName = string(tokens{3});
-                        appendIndex = length(returnStructure.(partName).models(index).connections) + 1;
-                        returnStructure.(partName).models(index).connections(appendIndex) = connectedPartName;
-                end
-            else
-                classifier = lower(tokens{1});
-                switch classifier
-                    case 'shape' %Shape property is another filename
-                        filepath = folderpath + '\' + string(tokens{2}); %Append if more than one shape has been given
-                        returnStructure.(partName).shape = mergeModels([returnStructure.(partName).shape loadAndMergeModels(filepath)]);
-                    case 'type'
-                        type = string(tokens{2});
-                        returnStructure.(partName).type = type;
-                    case 'attribute' %Used for later additions
-                        attribute = string(tokens{2});
-                        returnStructure.(partName).attributes(end+1) = attribute;
-                    otherwise
-                        error('Unknown classifier: ' + classifier);
-                end
+                    end                   
+                case 'normal' %Set normal
+                    normal = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
+                    returnStructure.(partName).frontNormal = normal;
+                case 'up' %Set upVector
+                    up = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
+                    returnStructure.(partName).upVector = up;
+                    for i = 1:length(returnStructure.(partName).models) %Fill in extra parts...
+                        returnStructure.(partName).models(i).upVector = up;
+                    end
+                case 'style'
+                    style = string(tokens{2});
+                    returnStructure.(partName).style = style;
+                case 'shape' %Shape property is another filename
+                    filepath = folderpath + '\' + string(tokens{2}); %Append if more than one shape has been given
+                    returnStructure.(partName).shape = mergeModels([returnStructure.(partName).shape loadAndMergeModels(filepath)]);
+                case 'type'
+                    type = string(tokens{2});
+                    returnStructure.(partName).type = type;
+                case 'attribute' %Used for later additions
+                    attribute = string(tokens{2});
+                    returnStructure.(partName).attributes(end+1) = attribute;                        
+                otherwise
+                    message = ['Unknown classifier: ' classifier ' when attempting to load ' folderpath];
+                    error(message);
             end
-            
+        
             line = fgetl(fileID);
-        end
+        end        
     end
 end

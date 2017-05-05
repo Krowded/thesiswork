@@ -1,7 +1,7 @@
 %Return indices of the normals that are (almost) parallel to the given normal
 function [faceIndices] = getSameDirectionFaceIndices(faceNormals, normal, accuracy)
     if nargin < 3
-        accuracy = 0.999;
+        accuracy = 0.9;
     end
 
     faceIndices = [];

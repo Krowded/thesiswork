@@ -1,44 +1,39 @@
-style
-farm
-.
 foundation
-1 filename wallFront.ply 
-1 normal 0 0 -1
-1 up 0 1 0
-2 filename wallLeft.ply 
-2 normal -1 0 0
-2 up 0 1 0
-2 connection ladderbig
-3 filename wallRight.ply 
-3 normal 1 0 0
-3 up 0 1 0
-3 connection laddersmall
-4 filename wallBack.ply 
-4 normal 0 0 1
-4 up 0 1 0
+filename wallFront.ply normal 0 0 -1
+filename wallLeft.ply normal -1 0 0
+filename wallRight.ply normal 1 0 0
+filename wallBack.ply normal 0 0 1
+normal 0 0 -1
+up 0 1 0
+style farm
 .
 roof
-1 filename roof.ply 
-1 normal 0 0 -1
-1 up 0 1 0
+filename roof.ply 
+normal 0 0 -1
+up 0 1 0
+style farm
 .
 pipe
-1 filename pipe.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename pipe.ply
+normal -1 0 0
+up 0 1 0
+style farm
 .
 ladderbig
-1 filename ladderbig.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename ladderbig.ply
+normal -1 0 0
+up 0 1 0
+style farm
 .
 platform
-1 filename platform.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename platform.ply
+normal -1 0 0
+up 0 1 0
+style farm
 .
 laddersmall
-1 filename laddersmall.ply
-1 normal 1 0 0
-1 up 0 1 0
+filename laddersmall.ply
+normal 1 0 0
+up 0 1 0
+style farm
 .

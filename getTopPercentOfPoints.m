@@ -4,7 +4,6 @@ function topPoints = getTopPercentOfPoints(points, up, percent)
     end
     
     cutoff = (100 - percent)*0.01;
-
     heights = points*up';
     maxHeight = max(heights);
     minHeight = min(heights);

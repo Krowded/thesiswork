@@ -1,12 +1,9 @@
-function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, frontIndices, backIndices, slots, connections, upVector, attributes)
-    if nargin < 10
+function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, frontIndices, backIndices, slots, upVector, attributes)
+    if nargin < 9
         attributes = string();
     end
-    if nargin < 9
-        upVector = [0, 1 ,0];
-    end
     if nargin < 8
-        connections  = strings([0,0]);
+        upVector = [];
     end
     if nargin < 7
         slots = [];
@@ -37,9 +34,9 @@ function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, fron
     modelStruct.frontIndices = frontIndices;
     modelStruct.backIndices = backIndices;
     modelStruct.slots = slots;
-    modelStruct.connections = connections;
     modelStruct.upVector = upVector;
     modelStruct.attributes = attributes;
     modelStruct.cornerIndicesLeft = [];
     modelStruct.cornerIndicesRight = [];
+    modelStruct.filepath = '';
 end

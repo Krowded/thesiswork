@@ -1,10 +1,8 @@
-style
-basic
-.
 door
-1 filename door.ply
-1 normal -1 0 0
-1 up 0 1 0
+filename door.ply
+normal -1 0 0
+up 0 1 0
 shape doorcon.ply
 type cut
+style basic
 .

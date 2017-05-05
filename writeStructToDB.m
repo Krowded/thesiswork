@@ -4,12 +4,7 @@ function [] = writeStructToDB(structToWrite)
     global collection;
     global writeconcern;
 
-    fields = fieldnames(structToWrite);
-    doc = BasicDBObject();
-    
-    for i = 1:length(fields)
-        doc.put(fields{i}, structToWrite.(fields{i}));
-    end
+    doc = BSONObjectFromStruct(structToWrite);
 
     collection.insert(doc, writeconcern);
 end
