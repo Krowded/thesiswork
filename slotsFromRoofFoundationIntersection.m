@@ -1,4 +1,4 @@
-function slotVertices = slotsFromRoofFoundationIntersection(roofStruct, foundationStructs)
+function slots = slotsFromRoofFoundationIntersection(roofStruct, foundationStructs)
     %Collect all vertices in one array
     foundationVertices = [];
     for i = 1:length(foundationStructs)
@@ -24,30 +24,12 @@ function slotVertices = slotsFromRoofFoundationIntersection(roofStruct, foundati
         error('No roof/foundation intersection found');
     end
     
-    %Corner values
-    x = foundationPointsAboveLimit*xaxis';
-    z = foundationPointsAboveLimit*zaxis';
-    minX = min(x);
-    maxX = max(x);
-    minZ = min(z);
-    maxZ = max(z);
+    %Get vertices from contour
+    contour = extractContour3D(foundationPointsAboveLimit, yaxis);
+    slotVertices = slotsFromContour(contour, yaxis, zaxis);
     
-    %Preallocate
-    slotVertices = zeros(8,3);
-    
-    %Back slots
-    slotVertices(1,:) = minX*xaxis + maxZ*zaxis;
-    slotVertices(2,:) = maxX*xaxis + maxZ*zaxis;
-    slotVertices(3,:) = maxX*xaxis + maxZ*zaxis;
-    slotVertices(4,:) = minX*xaxis + maxZ*zaxis;
-    slotVertices(1:2,:) = slotVertices(1:2,:) + roofHighestPoint*yaxis;
-    slotVertices(3:4,:) = slotVertices(3:4,:) + roofLowestPoint*yaxis;
-    
-    %Front slots
-    slotVertices(5,:) = minX*xaxis + minZ*zaxis;
-    slotVertices(6,:) = maxX*xaxis + minZ*zaxis;
-    slotVertices(7,:) = maxX*xaxis + minZ*zaxis;
-    slotVertices(8,:) = minX*xaxis + minZ*zaxis;
-    slotVertices(5:6,:) = slotVertices(5:6,:) + roofHighestPoint*yaxis;
-    slotVertices(7:8,:) = slotVertices(7:8,:) + roofLowestPoint*yaxis;
+    %Duplicate and adjust height
+    slots = zeros(8,3);
+    slots(1:4,:) = slotVertices - (slotVertices*yaxis')*yaxis + roofLowestPoint*yaxis;
+    slots(5:8,:) = slotVertices - (slotVertices*yaxis')*yaxis + roofHighestPoint*yaxis;
 end

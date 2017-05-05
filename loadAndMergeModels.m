@@ -1,9 +1,5 @@
-function [model, subModelVertexSizes, subModelFaceSizes] = loadAndMergeModels(filepaths, normal)
-    if nargin < 2
-        normal = [];
-    end
-
-    model = newModelStruct([], [], [], normal);
+function [model, subModelVertexSizes, subModelFaceSizes] = loadAndMergeModels(filepaths)
+    model = newModelStruct([], [], [], []);
     subModelVertexSizes = [];
     subModelFaceSizes = [];
     for i = 1:length(filepaths)

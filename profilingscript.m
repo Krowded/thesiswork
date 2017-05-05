@@ -1,4 +1,4 @@
 profile clear
 profile on
-testScriptIntegration
+testDatabaseIntegration
 profile viewer

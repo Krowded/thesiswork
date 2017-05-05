@@ -1,6 +1,6 @@
 function returnStructure = loadAndPrepareModelFolder(folderpath)
     %Load
-    returnStructure = loadModelFolder(folderpath);   
+    returnStructure = loadModelFolder(folderpath);
     
     %Fix missing information
     partNames = fieldnames(returnStructure);

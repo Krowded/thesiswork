@@ -22,7 +22,7 @@ function [wallStructs] = curveWalls(wallStructs, curveStructs)
             end
             
             if angle > 0.0001 %Skip investigations 0, it's problematic
-                vec2D = flattenVertices([curveStructs(j).normal; wallStruct.frontNormal], normalize(cross(curveStructs(j).normal, wallStruct.frontNormal)));
+                vec2D = flattenVertices([curveStructs(j).normal'; wallStruct.frontNormal], normalize(cross(curveStructs(j).normal', wallStruct.frontNormal)));
                 angleSign = sign(vec2D(1,1)*vec2D(2,2) - vec2D(1,2)*vec2D(2,1));
                 if isnan(angleSign)
                     angleSign = 1;
@@ -30,14 +30,20 @@ function [wallStructs] = curveWalls(wallStructs, curveStructs)
                 angle = angleSign*angle;
             end
 
-            share = max(cos(angle),0);      
-
+            %Scale curve
+            share = max(cos(angle),0);
             curveFunction = @(xq) curveStructs(j).curveFunction(xq)*share;
-            wallStruct = curveWall(wallStruct, curveFunction);
+            
+            %Get min and max so corners can scale properly
+            minHeight = min(wallStruct.vertices(wallStruct.frontIndices,:)*wallStruct.upVector');
+            maxHeight = max(wallStruct.vertices(wallStruct.frontIndices,:)*wallStruct.upVector');
+            
+            %Curve the wall
+            wallStruct = curveWall(wallStruct, curveFunction, minHeight, maxHeight);
 
-            %Adjacent corners
-            wallStructToTheLeft = curveRightCorner(wallStructToTheLeft, curveFunction, wallStruct.frontNormal);
-            wallStructToTheRight = curveLeftCorner(wallStructToTheRight, curveFunction, wallStruct.frontNormal);
+            %And adjacent corners
+            wallStructToTheLeft = curveCorner(wallStructToTheLeft,  wallStructToTheLeft.cornerIndicesRight, curveFunction, wallStruct.frontNormal, minHeight, maxHeight);
+            wallStructToTheRight = curveCorner(wallStructToTheRight, wallStructToTheRight.cornerIndicesLeft, curveFunction, wallStruct.frontNormal, minHeight, maxHeight);
         end
     end
 end

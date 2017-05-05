@@ -16,7 +16,7 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     adjustedMaxWidth = maxWidth - sqrt((diff/cosd(angleRight))^2 - diff^2);
     if isnan(adjustedMaxWidth), adjustedMaxWidth = maxWidth; end
     
-    %Back can just be a simple square (for now)
+%   Back can just be a simple square (for now)
     backVertices = [ adjustedMinWidth minHeight minDepth;
                      adjustedMinWidth maxHeight minDepth;
                      adjustedMaxWidth maxHeight minDepth;

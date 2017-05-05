@@ -2,12 +2,8 @@
 %of contourVertices. If up is not provided, y is assumed to be the up
 %vector.
 %Also assumes that all values in the normal direction are identical
-function slotVertices = slotsFromContour(contourVertices, normal, optional_up)
-    if nargin < 3
-       optional_up = [0, 1, 0];
-    end
-    
-    y = optional_up;
+function slotVertices = slotsFromContour(contourVertices, normal, up)   
+    y = up;
     x = normalize(cross(y, normal));
     
     xvalues = contourVertices*x';
