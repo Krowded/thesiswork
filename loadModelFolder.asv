@@ -66,9 +66,12 @@ function returnStructure = loadModelFolder(folderpath)
                     style = string(tokens{2});
                     returnStructure.(partName).style = style;
                 case 'shape' %Shape property is another filename
-                    filepath = folderpath + string(tokens{2}); %Append if more than one shape has been given
+                    filepath = folderpath + '\' + string(tokens{2}); %Append if more than one shape has been given
+                    
                     returnStructure.(partName).shape = mergeModels([returnStructure.(partName).shape loadAndMergeModels(filepath)]);
-                    returnStructure.(partName).shape.filepaths = [returnStructure.(partName).shape.filepaths; string(filepath)];
+                    if isempty(returnStructure.(partName).shape.filepaths)
+                    else
+                    returnStructure.(partName).shape.filepaths = [returnStructure.(partName).shape.filepaths; filepath];
                 case 'type'
                     type = string(tokens{2});
                     returnStructure.(partName).type = type;

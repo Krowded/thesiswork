@@ -20,7 +20,7 @@ for i = 1:length(infoFiles)
                 part.slots = slotsFromModel(mergeModels(part.models));
             end
         else
-            if ~isempty(part.shape.vertices)
+            if ~isempty(part.shape)
                 part.contour = extractSimplifiedContour3D(part.shape.vertices, part.frontNormal);
                 part.shape.frontNormal = part.frontNormal;
                 part.shape.upVector = part.upVector;
@@ -47,9 +47,8 @@ for i = 1:length(infoFiles)
         cleanPart = part;
         cleanPart = rmfield(cleanPart, 'models');
         filepaths = cleanPart.shape.filepaths;
-        cleanPart = rmfield(cleanPart, 'shape');
-        cleanPart.shape = struct();
-        cleanPart.shape.filepaths = string(filepaths);
+        cleanPart = rmfield(cleanPart, 'shape')
+        ; 
         
         %Finally write to db
         writeStructToDB(cleanPart);

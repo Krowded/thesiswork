@@ -38,11 +38,12 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     wallStruct.backIndices = ((size(frontVertices,1)+1):(size(frontVertices,1)+size(backVertices,1)))';
     wallStruct.vertices = [frontVertices; backVertices];
     
-    %Save corner indices for curving purposes
-    wallStruct.frontCornerIndicesLeft = wallStruct.frontIndices(1:numberOfLinesY);
-    wallStruct.frontCornerIndicesRight = wallStruct.frontIndices(((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY));
-    wallStruct.backCornerIndicesLeft = wallStruct.backIndices([1 2]);
-    wallStruct.backCornerIndicesRight = wallStruct.backIndices([3 4]);
+    %Save corner indices for curving later
+    wallStruct.frontCornerIndicesLeft = wallStruct.frontIndices(1:numberOfLinesY)
+    wallStruct.frontCornerIndicesRight = ((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY);
+    wallStruct.backCornerIndicesLeft = wallStruct.backIndices(
+    wallStruct.backCornerIndicesRight = ((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY);
+     
     
     %Rotate to fit basis
     z = normal;
@@ -50,9 +51,9 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     x = normalize(cross(y, z));
     wallStruct.vertices = changeBasis(wallStruct.vertices, z, y, x);
     
-    %Don't know why I have to do this this way, but it seems to make it
-    %correct
+    %Don't know why I have to do it this way, but it seems to fix the
+    %problem..
     wallStruct.frontNormal = changeBasis([0, 0, 1], z, y, x);
     wallStruct.upVector = changeBasis([0, 1, 0], z, y, x);
-    wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontNormal));
+    
 end

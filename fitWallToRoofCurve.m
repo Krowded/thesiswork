@@ -32,24 +32,24 @@ function [wallStruct, changedAndNewIndices] = fitWallToRoofCurve(wallStruct, low
             wallStruct.frontIndices = [wallStruct.frontIndices; newIndices];
             changedAndNewIndices = [changedAndNewIndices; newIndices];
         end
-
-    %Back
-        heights = wallStruct.vertices(wallStruct.backIndices,:)*ydirection';
-        indicesToChange = wallStruct.backIndices(heights > (lowestChangableHeight-margin));
-        newVertices = fitModelToCurve(wallStruct.vertices(indicesToChange,:), curve, xdirection, ydirection, minNumberOfPoints);
-
-        %Replace old vertices
-        lengthOfOldIndices = length(indicesToChange);
-        wallStruct.vertices(indicesToChange,:) = newVertices(1:lengthOfOldIndices,:);
-        changedAndNewIndices = [changedAndNewIndices; indicesToChange];
-
-        %Append any new vertices
-        if lengthOfOldIndices < minNumberOfPoints
-            oldSize = size(wallStruct.vertices,1);
-            wallStruct.vertices = [wallStruct.vertices; newVertices((lengthOfOldIndices+1):end,:)];
-            newSize = size(wallStruct.vertices,1);
-            newIndices = ((oldSize+1):newSize)';
-            wallStruct.backIndices = [wallStruct.backIndices; newIndices];
-            changedAndNewIndices = [changedAndNewIndices; newIndices];
-        end
+% 
+%     %Back
+%         heights = wallStruct.vertices(wallStruct.backIndices,:)*ydirection';
+%         indicesToChange = wallStruct.backIndices(heights > (lowestChangableHeight-margin));
+%         newVertices = fitModelToCurve(wallStruct.vertices(indicesToChange,:), curve, xdirection, ydirection, minNumberOfPoints);
+% 
+%         %Replace old vertices
+%         lengthOfOldIndices = length(indicesToChange);
+%         wallStruct.vertices(indicesToChange,:) = newVertices(1:lengthOfOldIndices,:);
+%         changedAndNewIndices = [changedAndNewIndices; indicesToChange];
+% 
+%         %Append any new vertices
+%         if lengthOfOldIndices < minNumberOfPoints
+%             oldSize = size(wallStruct.vertices,1);
+%             wallStruct.vertices = [wallStruct.vertices; newVertices((lengthOfOldIndices+1):end,:)];
+%             newSize = size(wallStruct.vertices,1);
+%             newIndices = ((oldSize+1):newSize)';
+%             wallStruct.backIndices = [wallStruct.backIndices; newIndices];
+%             changedAndNewIndices = [changedAndNewIndices; newIndices];
+%         end
 end

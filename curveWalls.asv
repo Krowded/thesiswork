@@ -43,17 +43,21 @@ function wallStructs = curveWalls(wallStructs, curveStructs)
             %Curve the wall
             wallStruct = curveWall(wallStruct, wallStruct.frontIndices, curveFunction, wallStruct.frontNormal, minHeight, maxHeight);
             wallStruct.vertices(wallStruct.backIndices,:) = wallStruct.vertices(wallStruct.backIndices,:) - maxAdjustment*wallStruct.frontNormal;
-%             wallStruct.vertices(wallStruct.frontIndices,:) = wallStruct.vertices(wallStruct.frontIndices,:) + maxAdjustment*wallStruct.frontNormal;
-            wallStruct.adjustment = wallStruct.adjustment - maxAdjustment*wallStruct.frontNormal;
 
-            %And adjacent corners
-            wallStructToTheLeft = curveWall(wallStructToTheLeft, wallStructToTheLeft.frontCornerIndicesRight, curveFunction, wallStruct.frontNormal, minHeight, maxHeight);
-            wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) = wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) - maxAdjustment*wallStruct.frontNormal;
-%             wallStructToTheLeft.vertices(wallStructToTheLeft.frontCornerIndicesRight,:) = wallStructToTheLeft.vertices(wallStructToTheLeft.frontCornerIndicesRight,:) + maxAdjustment*wallStruct.frontNormal; 
+            %And adjacent corners           
+            angle = acos(dot(wallStruct.frontNormal, wallStructToTheLeft.frontNormal));
+            share = max(abs(sin(angle)),0);
+            curveFunctionLeft = @(xq)share * curveFunction;
             
+            wallStructToTheLeft = curveWall(wallStructToTheLeft, wallStructToTheLeft.frontCornerIndicesRight, curveFunctionLeft, wallStruct.frontNormal, minHeight, maxHeight);
+            wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) = wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) - share*maxAdjustment*wallStruct.frontNormal;
+            
+            angle = acos(dot(wallStruct.frontNormal, wallStructToTheRight.frontNormal));
+            share = max(abs(sin(angle)),0);
+            curveFunctionRight = share * curveFunction;
+
             wallStructToTheRight = curveWall(wallStructToTheRight, wallStructToTheRight.frontCornerIndicesLeft, curveFunction, wallStruct.frontNormal, minHeight, maxHeight);
             wallStructToTheRight.vertices(wallStructToTheRight.backCornerIndicesLeft,:) = wallStructToTheRight.vertices(wallStructToTheRight.backCornerIndicesLeft,:) - maxAdjustment*wallStruct.frontNormal;
-%             wallStructToTheRight.vertices(wallStructToTheRight.frontCornerIndicesLeft,:) = wallStructToTheRight.vertices(wallStructToTheRight.frontCornerIndicesLeft,:) + maxAdjustment*wallStruct.frontNormal;
         end
     end
 end

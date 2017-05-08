@@ -10,6 +10,7 @@ style magic
 roof
 filename roofLeft.ply 
 filename roofRight.ply 
+shape roofShape.ply
 normal -1 0 0
 up 0 1 0
 style magic

@@ -31,12 +31,17 @@ function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, fron
     modelStruct.faces = faces;
     modelStruct.faceNormals = faceNormals;
     modelStruct.frontNormal = normal;
+    modelStruct.upVector = upVector;
+    modelStruct.sideVector = [];
     modelStruct.frontIndices = frontIndices;
     modelStruct.backIndices = backIndices;
     modelStruct.slots = slots;
-    modelStruct.upVector = upVector;
     modelStruct.attributes = attributes;
-    modelStruct.cornerIndicesLeft = [];
-    modelStruct.cornerIndicesRight = [];
-    modelStruct.filepath = '';
+    modelStruct.frontCornerIndicesLeft = [];
+    modelStruct.frontCornerIndicesRight = [];
+    modelStruct.backCornerIndicesLeft = [];
+    modelStruct.backCornerIndicesRight = [];
+    modelStruct.filepaths = string.empty;
+    
+    modelStruct.adjustment = [0 0 0];
 end

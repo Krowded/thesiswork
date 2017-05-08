@@ -2,6 +2,7 @@ function [model, subModelVertexSizes, subModelFaceSizes] = loadAndMergeModels(fi
     model = newModelStruct([], [], [], []);
     subModelVertexSizes = [];
     subModelFaceSizes = [];
+    filepaths = string(filepaths); %Cause blaha...
     for i = 1:length(filepaths)
         [tempVertices, tempFaces] = read_ply(filepaths(i));
         tempModel = newModelStruct(tempVertices, tempFaces);

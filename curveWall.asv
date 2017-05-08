@@ -1,5 +1,0 @@
-function wallStruct = curveWall(wallStruct, curveFunction, minPoint, maxPoint)
-    %Curve front part of wall
-    if narg
-    wallStruct.vertices(wallStruct.frontIndices,:) = curveVertices(wallStruct.vertices(wallStruct.frontIndices,:), curveFunction, wallStruct.upVector, wallStruct.frontNormal, minPoint, maxPoint);
-end
