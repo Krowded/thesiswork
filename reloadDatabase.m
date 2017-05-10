@@ -21,14 +21,14 @@ for i = 1:length(infoFiles)
             end
         else
             if ~isempty(part.shape.vertices)
-                part.contour = extractSimplifiedContour3D(part.shape.vertices, part.frontNormal);
-                part.shape.frontNormal = part.frontNormal;
+                part.contour = extractSimplifiedContour3D(part.shape.vertices, part.frontVector);
+                part.shape.frontVector = part.frontVector;
                 part.shape.upVector = part.upVector;
                 part.slots = slotsFromModel(part.shape);
             else %If no shape available, use full object
                 mergedModel = mergeModels(part.models);
-                part.contour = extractSimplifiedContour3D(mergedModel.vertices, part.frontNormal);
-                mergedModel.frontNormal = part.frontNormal;
+                part.contour = extractSimplifiedContour3D(mergedModel.vertices, part.frontVector);
+                mergedModel.frontVector = part.frontVector;
                 mergedModel.upVector = part.upVector;
                 part.slots = slotsFromModel(mergedModel);
             end

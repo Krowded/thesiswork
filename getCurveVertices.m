@@ -11,22 +11,46 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     %Since flattened vertices are in winding order, we can just check the
     %sign of the vector between two consecutive points
     curveVertices = [];
+    lastOneAdded = 0; %Keep track of if we are in a chain of adding, otherwise we need to add current vertex as well
+    addedIndices = [];
+   
     for j = 1:(size(flattenedVertices,1)-1)
         edge = flattenedVertices(j+1,:) - flattenedVertices(j,:);
         if edge(2) > 0
-            curveVertices(end+1,:) = flattenedVertices(j,:);
+            if ~lastOneAdded
+                curveVertices(end+1,:) = flattenedVertices(j,:);
+                addedIndices(end+1) = j;
+            end
+            curveVertices(end+1,:) = flattenedVertices(j+1,:);
+            addedIndices(end+1) = j+1;
+            lastOneAdded = 1;
+        else
+            lastOneAdded = 0;
         end
     end
     
-    %Last one
-    edge = flattenedVertices(1,:) - flattenedVertices(end,:);
+    %Finish loop by checking connection between first and last index
+    lastIndex = size(flattenedVertices,1);
+    edge = flattenedVertices(1,:) - flattenedVertices(lastIndex,:);
     if edge(2) > 0
-        curveVertices(end+1,:) = flattenedVertices(1,:);
-    end
+        if ~ismember(lastIndex, addedIndices)
+            curveVertices(end+1,:) = flattenedVertices(lastIndex,:);
+        end
+        
+        if ~ismember(1, addedIndices)
+            curveVertices(end+1,:) = flattenedVertices(1,:);
+        end
+    end   
+    
+    
     
     %Top and bottom tend to have leftovers from the contour. Weed them out.    
     curveVertices = removeTail(curveVertices, 'ascend');
     curveVertices = removeTail(curveVertices, 'descend');
+    
+    %Remove any conflicting X values, keeping the larger one (i.e. the one
+    %closer to the edge)
+    curveVertices = removeDuplicates1D(curveVertices, [0 1], [1 0]);    
     
     function vertices = removeTail(vertices, direction)
         [~, I] = sort(vertices(:,2), 1, direction);
@@ -51,5 +75,5 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
         
         vertices(startingIndex,1) = maxX;
         vertices(indicesToReduce,:) = [];
-    end    
+    end
 end

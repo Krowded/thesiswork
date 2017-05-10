@@ -1,12 +1,21 @@
 function [foundationStructs, holeStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, parts)
     holeStructs = newHoleStruct(1,1);
     
-    for i = 1:length(connectionStructs)
+    i = 1;
+    while i < length(connectionStructs)+1
         for j = 1:length(parts)
             if strcmp(parts{j}.name, connectionStructs(i).name)
                 matchingPart = parts{j};
             end
         end
+        
+        %If no match found, ignore the connection
+        if ~exist('matchingPart','var')
+            warning(['Did not find any match for part [' char(connectionStructs(i).name) ']. Ignoring connection.'])
+            connectionStructs(i) = [];
+            continue;
+        end
+        
         
         %Parse connection
         connectedWall = connectionStructs(i).connectedWall;
@@ -34,5 +43,7 @@ function [foundationStructs, holeStructs, connectionStructs] = addConnections(fo
         %Collect output parameters
         holeStructs(i) = holeStruct;
         connectionStructs(i).transformationMatrix = M;
+        
+        i = i+1;
     end
 end

@@ -48,14 +48,14 @@ function returnStructure = loadModelFolder(folderpath)
                         switch classifier
                             case 'normal'
                                 normal = [str2double(tokens{4}) str2double(tokens{5}) str2double(tokens{6})];
-                                returnStructure.(partName).models(end).frontNormal = normal;
+                                returnStructure.(partName).models(end).frontVector = normal;
                             otherwise
                                 error(['Sub-classifier ' classifier ' unknown for type "filename"']);
                         end
                     end                   
                 case 'normal' %Set normal
                     normal = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
-                    returnStructure.(partName).frontNormal = normal;
+                    returnStructure.(partName).frontVector = normal;
                 case 'up' %Set upVector
                     up = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
                     returnStructure.(partName).upVector = up;

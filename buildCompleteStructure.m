@@ -13,7 +13,7 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
 
     %Add connections
     [foundationStructs, holeStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, partsStructs);
-
+    
     %Retriangulate    
     for i = 1:length(foundationStructs)
         holes = cell.empty();
@@ -30,18 +30,19 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
             foundationStructs(i) = retriangulateWall(foundationStructs(i), holes);
         end        
     end
-
+    
     %Remove bad faces
     for i = 1:length(foundationStructs)
         foundationStructs(i) = removeFacesAboveCurve(foundationStructs(i), changedAndNewIndices{i}, roofCurveStructs(i).curveFunction);
     end
-
+    
     %Curve wall
     foundationStructs = curveWalls(foundationStructs, foundationCurves);
 
     %Create missing parts of foundation (roof connection)
     foundationStruct = fuseFoundation(foundationStructs, roofShape);
-
+%     foundationStruct = mergeModels(foundationStructs)
+    
     %Insert parts into model
     collectedParts = newModelStruct();
     for i = 1:length(partsStructs)

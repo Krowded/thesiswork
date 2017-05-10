@@ -1,7 +1,7 @@
 foundation
 filename wallFront.ply normal 0 0 -1
-filename wallLeft.ply normal -1 0 0
-filename wallRight.ply normal 1 0 0
+filename wallLeft.ply normal 1 0 0
+filename wallRight.ply normal -1 0 0
 filename wallBack.ply normal 0 0 1
 normal 0 0 -1
 up 0 1 0

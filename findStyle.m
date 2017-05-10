@@ -6,11 +6,17 @@ function [foundationCurves, roofStruct, partsStructs] = findStyle(style, partNam
     partsStructs = cell.empty;
     for i = 1:length(partNames)
         name = partNames(i);
-        partsStructs = [partsStructs findAll([string('name'), string('style')], [name, style])];
+        foundParts = findAll([string('name'), string('style')], [name, style]);
+        
+        if isempty(foundParts)
+            warning(['No part with name [' char(name) '] found'])
+        end
+        
+        partsStructs = [partsStructs foundParts];
     end
     
     %Turn curve vertices into curveFunctions
     for i = 1:length(foundation.curves)
-        foundationCurves(i).curveFunction = @(xq) interp1(foundation.curves(i).vertices(:,2), foundation.curves(i).vertices(:,1), xq, 'linear', 'extrap');
+        foundationCurves(i).curveFunction = @(xq) interp1(foundationCurves(i).vertices(:,2), foundationCurves(i).vertices(:,1), xq, 'linear', 'extrap');
     end
 end

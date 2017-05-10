@@ -1,7 +1,7 @@
 %Returns the curve vertices of a wallStruct, scaled so that the bottom one
 %is at 0 and top one is at 100
 function curveStruct = getWallCurve(wallStruct)
-    sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontNormal));
+    sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontVector));
     vertices = wallStruct.vertices;
     vertices = getTopPercentOfPoints(vertices, sideVector, 20);
     curveVertices = getCurveVertices(vertices, -sideVector, wallStruct.upVector);
@@ -20,6 +20,6 @@ function curveStruct = getWallCurve(wallStruct)
     %curveStruct.curveFunction = @(xq) interp1(curveVertices(:,2), curveVertices(:,1), xq, 'linear', 'extrap');
     curveStruct.curveFunction = 'linear';
     curveStruct.curveLength = size(curveVertices,1);
-    curveStruct.span = max(curveVertices(:,1)) - min(curveVertices(:,1));
-    curveStruct.normal = wallStruct.frontNormal;
+    curveStruct.span = norm(max(curveVertices(:,1)) - min(curveVertices(:,1)));
+    curveStruct.normal = wallStruct.frontVector;
 end

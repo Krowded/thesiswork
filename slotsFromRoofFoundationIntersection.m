@@ -5,7 +5,7 @@ function slots = slotsFromRoofFoundationIntersection(roofStruct, foundationStruc
         foundationVertices = [foundationVertices; foundationStructs(i).vertices];
     end
 
-    zaxis = foundationStructs(1).frontNormal;
+    zaxis = foundationStructs(1).frontVector;
     yaxis = foundationStructs(1).upVector;
     xaxis = normalize(cross(yaxis,zaxis));
 
@@ -20,8 +20,9 @@ function slots = slotsFromRoofFoundationIntersection(roofStruct, foundationStruc
     foundationPointsAboveLimit = foundationVertices(foundationHeights > heightLimit,:);
     
     %Sanity check
-    if isempty(foundationPointsAboveLimit)
-        error('No roof/foundation intersection found');
+    numPoints = size(foundationPointsAboveLimit,1);
+    if numPoints < 2
+        error(['No valid roof/foundation intersection found. Found ' num2str(numPoints) ' intersecting vertices']);
     end
     
     %Get vertices from contour

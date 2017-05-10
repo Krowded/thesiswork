@@ -1,3 +1,3 @@
 function slotVertices = slotsFromModel(model)
-    slotVertices = slotsFromModelVertices(model.vertices, model.frontNormal, model.upVector);
+    slotVertices = slotsFromModelVertices(model.vertices, model.frontVector, model.upVector);
 end
