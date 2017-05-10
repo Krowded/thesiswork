@@ -43,7 +43,8 @@ function [foundationStructs, connections] = newFoundation()
     connection.name = 'door';
     connection.connectedWall  = 1;
     connection.slots = doorSlots;
+    connection.type = 'cut';
+    connection.transformationMatrix = [];
 
-    
     connections(1) = connection;
 end

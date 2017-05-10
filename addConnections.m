@@ -1,37 +1,38 @@
-function [foundationStructs, holeStructs, transformationMatrices] = addConnections(foundationStructs, connectionStructs, parts)
+function [foundationStructs, holeStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, parts)
     holeStructs = newHoleStruct(1,1);
-    transformationMatrices = cell(length(connectionStructs),1);
     
     for i = 1:length(connectionStructs)
         for j = 1:length(parts)
             if strcmp(parts{j}.name, connectionStructs(1).name)
-                part = parts{j};
+                matchingPart = parts{j};
             end
         end
         
         %Parse connection
-        connection = connectionStructs(i);
-        doorSlots = connection.slots;
-        connectedWall = connection.connectedWall;
-
+        connectedWall = connectionStructs(i).connectedWall;
+        
         %Match slots
-        M = matchSlots(part.slots, doorSlots, 'uniform');
+        M = matchSlots(matchingPart.slots, connectionStructs(i).slots, 'uniform');
 
-        %Get contour and move to wall
-        newModelContour = part.contour;
-        newModelContour = applyTransformation(newModelContour, M);
+        if strcmp(connectionStructs(i).type, 'cut')
+            %Get contour and move to wall
+            newModelContour = matchingPart.contour;
+            newModelContour = applyTransformation(newModelContour, M);
 
-        %Constrain contour
-        T = constrainContour(foundationStructs(connectedWall).vertices, newModelContour, foundationStructs(connectedWall).upVector);
-        newModelContour = applyTransformation(newModelContour, T);
-        M = T*M;
+            %Constrain contour
+            T = constrainContour(foundationStructs(connectedWall).vertices, newModelContour, foundationStructs(connectedWall).upVector);
+            newModelContour = applyTransformation(newModelContour, T);
+            M = T*M;
 
-        %Carve door shape into front wall
-        [foundationStructs(connectedWall), holeStruct] = createHoleFromContour(foundationStructs(connectedWall), newModelContour);
-        holeStruct.connectedWall = connectedWall;
+            %Carve door shape into wall
+            [foundationStructs(connectedWall), holeStruct] = createHoleFromContour(foundationStructs(connectedWall), newModelContour);
+            holeStruct.connectedWall = connectedWall;
+        else
+            holeStruct = newHoleStruct();
+        end
 
         %Collect output parameters
         holeStructs(i) = holeStruct;
-        transformationMatrices{i} = M;
+        connectionStructs(i).transformationMatrix = M;
     end
 end
