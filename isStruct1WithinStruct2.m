@@ -1,7 +1,7 @@
 %Check if, seen from above, struct1 is within the boundary of struct2
 function isWithinBoundary = isStruct1WithinStruct2(struct1, struct2)
     y = struct1.upVector;
-    z = struct1.frontNormal;
+    z = struct1.frontVector;
     x = normalize(cross(y,z));
     
     struct1X = struct1.vertices*x';

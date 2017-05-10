@@ -52,7 +52,7 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     
     %Don't know why I have to do this this way, but it seems to make it
     %correct
-    wallStruct.frontNormal = changeBasis([0, 0, 1], z, y, x);
+    wallStruct.frontVector = changeBasis([0, 0, 1], z, y, x);
     wallStruct.upVector = changeBasis([0, 1, 0], z, y, x);
-    wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontNormal));
+    wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontVector));
 end

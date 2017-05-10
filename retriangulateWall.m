@@ -5,8 +5,6 @@ function wallStruct = retriangulateWall(wallStruct, holeStructs)
         holeStructs = [];
     end
     
-    normal = wallStruct.frontNormal;
-    
     %Collect all holes in single structure
     concatenatedHoles = newHoleStruct([],[]);
     concatenatedHoles.holeLength = [];
@@ -25,8 +23,8 @@ function wallStruct = retriangulateWall(wallStruct, holeStructs)
     wallStruct = removeFacesWithOnlyIndices(wallStruct, [wallStruct.frontIndices; wallStruct.backIndices]);
     
     %Retriangulate and append
-    faces = retriangulateSurface(wallStruct.vertices, wallStruct.frontIndices, concatenatedHoles.frontIndices, concatenatedHoles.holeLength, normal);
-    faces = [faces; retriangulateSurface(wallStruct.vertices, wallStruct.backIndices, concatenatedHoles.backIndices, concatenatedHoles.holeLength, -normal)];
+    faces = retriangulateSurface(wallStruct.vertices, wallStruct.frontIndices, concatenatedHoles.frontIndices, concatenatedHoles.holeLength, wallStruct.frontVector);
+    faces = [faces; retriangulateSurface(wallStruct.vertices, wallStruct.backIndices, concatenatedHoles.backIndices, concatenatedHoles.holeLength, -wallStruct.frontVector)];
     
     %Create faces between the depth levels ("window sills")
     wallStruct.faces = [wallStruct.faces; faces; createFacesBetweenContours(holeStructs)];

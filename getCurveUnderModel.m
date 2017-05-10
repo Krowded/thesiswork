@@ -2,7 +2,7 @@
 %position of positionModel
 function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     ydirection = positionModel.upVector;
-    zdirection = positionModel.frontNormal;
+    zdirection = positionModel.frontVector;
     
     %Keep only points around the top of positionModel
     highestPoints = getTopPercentOfPoints(positionModel.vertices, ydirection, 10);

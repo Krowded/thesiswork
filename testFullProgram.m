@@ -7,7 +7,7 @@ style = string('magic');
 %Extract names
 partNames = string.empty;
 for i = 1:length(connectionStructs)
-    partNames(i) = string(connectionStructs.name);
+    partNames(i) = string(connectionStructs(i).name);
 end
 
 [foundationCurves, roofStruct, partsStructs] = findStyle(style, partNames);

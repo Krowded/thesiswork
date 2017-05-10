@@ -1,6 +1,6 @@
 function [foundationStructs, roofM, changedAndNewIndices, roofCurveStructs, newRoofShape] = fitRoof(foundationStructs, newRoofShape)
     %Match roof slots
-    roofM = matchSlots(newRoofShape.slots, foundationStructs(1).slots, 'uniform', foundationStructs(1).frontNormal, foundationStructs(1).upVector);
+    roofM = matchSlots(newRoofShape.slots, foundationStructs(1).slots, 'uniform', foundationStructs(1).frontVector, foundationStructs(1).upVector);
     newRoofShape.slots = applyTransformation(newRoofShape.slots, roofM);
     newRoofShape.vertices = applyTransformation(newRoofShape.vertices, roofM);
     

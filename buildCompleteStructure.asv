@@ -12,17 +12,23 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     [foundationStructs, roofTransformationMatrix, changedAndNewIndices, roofCurveStructs, roofShape] = fitRoof(foundationStructs, roofShape);
 
     %Add connections
-    [foundationStructs, holeStructs, transformationMatrices] = addConnections(foundationStructs, connectionStructs, partsStructs);
+    [foundationStructs, holeStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, partsStructs);
 
-    %Retriangulate
-    connectedWall = 1; %TEMP FIX
-    foundationStructs(connectedWall) = retriangulateWall(foundationStructs(connectedWall), holeStructs);
+    %Retriangulate    
     for i = 1:length(foundationStructs)
-        if i == connectedWall
-            continue;
+        holes = cell.empty();
+        for j = 1:length(holeStructs)
+            if holeStructs(j).connectedWall == i
+                holes{end+1} = holeStructs(j);
+            end
         end
-
-        foundationStructs(i) = retriangulateWall(foundationStructs(i));
+        
+        if isempty(holes)
+            foundationStructs(i) = retriangulateWall(foundationStructs(i));
+        else
+            holes = [holes{:}];
+            foundationStructs(i) = retriangulateWall(foundationStructs(i), holes);
+        end        
     end
 
     %Remove bad faces
@@ -31,20 +37,27 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     end
 
     %Curve wall
-%     foundationStructs = curveWalls(foundationStructs, foundationCurves);
+    foundationStructs = curveWalls(foundationStructs, foundationCurves);
 
     %Create missing parts of foundation (roof connection)
     foundationStruct = fuseFoundation(foundationStructs, roofShape);
 
     %Insert parts into model
-    %CAREFUL. ONE PART COULD BE USED SEVERAL TIMES AND/OR DIFFERENT ORDER > FIX!
-    %Adjust M to curve
-    transformationMatrices{connectedWall} = getTranslationMatrixFromVector(foundationStructs(1).adjustment) * transformationMatrices{connectedWall};
     collectedParts = newModelStruct();
     for i = 1:length(partsStructs)
-        temp = loadAndMergeModels(partsStructs{i}.filepaths);
-        temp.vertices = applyTransformation(temp.vertices, transformationMatrices{i});
-        collectedParts = mergeModels([collectedParts, temp]);
+        partModel = loadAndMergeModels(partsStructs{j}.filepaths);
+        
+        for j = 1:length(connectionStructs)
+            if connectionStructs(j)
+            
+            %Adjust transformation to curve
+            adjustmentVector = foundationStructs(connectionStructs(j).connectedWall).adjustment;
+            connectionStructs(j).transformationMatrix = getTranslationMatrixFromVector(adjustmentVector) * connectionStructs(j).transformationMatrix;
+            
+            %Create instance
+            temp = applyTransformation(partModel.vertices, connectionStructs(j).transformationMatrix);
+            collectedParts = mergeModels([collectedParts, temp]);
+        end
     end
     foundationStruct = mergeModels([foundationStruct collectedParts]);
 

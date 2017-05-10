@@ -1,4 +1,4 @@
-function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, frontIndices, backIndices, slots, upVector, attributes)
+function modelStruct = newModelStruct(vertices, faces, faceNormals, frontVector, frontIndices, backIndices, slots, upVector, attributes)
     if nargin < 9
         attributes = string();
     end
@@ -15,7 +15,7 @@ function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, fron
         frontIndices = [];
     end
     if nargin < 4
-        normal = [];
+        frontVector = [];
     end
     if nargin < 3
         faceNormals = [];
@@ -30,7 +30,7 @@ function modelStruct = newModelStruct(vertices, faces, faceNormals, normal, fron
     modelStruct.vertices = vertices;
     modelStruct.faces = faces;
     modelStruct.faceNormals = faceNormals;
-    modelStruct.frontNormal = normal;
+    modelStruct.frontVector = frontVector;
     modelStruct.upVector = upVector;
     modelStruct.sideVector = [];
     modelStruct.frontIndices = frontIndices;

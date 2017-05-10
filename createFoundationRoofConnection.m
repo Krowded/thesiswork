@@ -18,7 +18,7 @@ function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct
     
     %Check if the foundation points are contained within the roof points
     %And if it is we don't need to continue. Return original struct.
-    struct1 = struct('vertices', foundationStruct.vertices(interestingFoundationVertexIndices,:), 'frontNormal', foundationStruct.frontNormal, 'upVector', up);
+    struct1 = struct('vertices', foundationStruct.vertices(interestingFoundationVertexIndices,:), 'frontVector', foundationStruct.frontVector, 'upVector', up);
     struct2 = struct('vertices', interestingRoofVertices);
     if isStruct1WithinStruct2(struct1, struct2)
         fusedFoundationStruct = foundationStruct;

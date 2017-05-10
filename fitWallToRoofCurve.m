@@ -6,7 +6,7 @@ function [wallStruct, changedAndNewIndices] = fitWallToRoofCurve(wallStruct, low
     end
     
     ydirection = wallStruct.upVector;
-    zdirection = wallStruct.frontNormal;
+    zdirection = wallStruct.frontVector;
     xdirection = normalize(cross(ydirection, zdirection));
     
     margin = 0.001;

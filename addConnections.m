@@ -3,7 +3,7 @@ function [foundationStructs, holeStructs, connectionStructs] = addConnections(fo
     
     for i = 1:length(connectionStructs)
         for j = 1:length(parts)
-            if strcmp(parts{j}.name, connectionStructs(1).name)
+            if strcmp(parts{j}.name, connectionStructs(i).name)
                 matchingPart = parts{j};
             end
         end

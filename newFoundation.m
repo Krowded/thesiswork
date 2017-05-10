@@ -30,7 +30,7 @@ function [foundationStructs, connections] = newFoundation()
     maxY = diff/5 + minY;
     maxZ = max(temp*z');
     minZ = min(temp*z');
-    doorSlots = [minX maxY maxZ;
+    slots = [minX maxY maxZ;
                  maxX maxY maxZ;
                  maxX minY maxZ;
                  minX minY maxZ;
@@ -39,12 +39,44 @@ function [foundationStructs, connections] = newFoundation()
                  maxX minY minZ;
                  minX minY minZ];
              
-    connection = struct();
+    connection = newConnectionStruct();
     connection.name = 'door';
     connection.connectedWall  = 1;
-    connection.slots = doorSlots;
+    connection.slots = slots;
     connection.type = 'cut';
     connection.transformationMatrix = [];
 
     connections(1) = connection;
+    
+    
+    %Adding chimney
+    temp = foundationStructs(2).vertices;
+    maxX = max(temp*x');
+    minX = min(temp*x');
+    diff = abs(maxX - minX);
+    maxX = 5*diff/20 + minX;
+    minX = 4*diff/20 + minX;
+    maxY = max(temp*y');
+    minY = min(temp*y');
+    diff = abs(maxY - minY);
+    maxY = diff/5 + minY;
+    maxZ = max(temp*z');
+    minZ = min(temp*z');
+    slots = [minX maxY maxZ;
+                 maxX maxY maxZ;
+                 maxX minY maxZ;
+                 minX minY maxZ;
+                 minX maxY minZ;
+                 maxX maxY minZ;
+                 maxX minY minZ;
+                 minX minY minZ];
+             
+    connection = newConnectionStruct();
+    connection.name = 'chimney';
+    connection.connectedWall  = 2;
+    connection.slots = slots;
+    connection.type = 'dontcut';
+    connection.transformationMatrix = [];
+
+    connections(2) = connection;
 end

@@ -7,14 +7,14 @@ function [wallStruct, holeStruct] = insertNewHole(wallStruct, holeFrontVertices,
     
     %Append front vertices
     currentVerticesSize = size(wallStruct.vertices,1);
-    frontHoleIndices = (1:size(holeFrontVertices,1)) + currentVerticesSize;
-    wallStruct.frontIndices = [wallStruct.frontIndices; frontHoleIndices'];
+    frontHoleIndices = ((1:size(holeFrontVertices,1)) + currentVerticesSize)';
+    wallStruct.frontIndices = [wallStruct.frontIndices; frontHoleIndices];
     wallStruct.vertices = [wallStruct.vertices; holeFrontVertices];
     
     %Append back vertices
     currentVerticesSize = size(wallStruct.vertices,1);
-    backHoleIndices = (1:size(holeBackVertices,1)) + currentVerticesSize;
-    wallStruct.backIndices = [wallStruct.backIndices; backHoleIndices'];
+    backHoleIndices = ((1:size(holeBackVertices,1)) + currentVerticesSize)';
+    wallStruct.backIndices = [wallStruct.backIndices; backHoleIndices];
     wallStruct.vertices = [wallStruct.vertices; holeBackVertices];
 
     %Create return structure

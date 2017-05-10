@@ -4,6 +4,6 @@ function retriangulatedFaces = retriangulateSurface(vertices, surfaceIndices, ho
     edges = createEdgeLoops(holeIndices, lengthsOfHoles);
     
     %Retriangulate and append
-    indices = unique([holeIndices'; surfaceIndices]);
+    indices = unique([holeIndices; surfaceIndices]);
     retriangulatedFaces = constrainedDelaunayTriangulation(vertices, indices, edges, normal);
 end

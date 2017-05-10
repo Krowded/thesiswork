@@ -9,7 +9,7 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
     faceIndices = faceIndices(~isnan(faceIndices));
     
     %Get 2D points
-    zdirection = modelStruct.frontNormal;
+    zdirection = modelStruct.frontVector;
     ydirection = modelStruct.upVector;    
     points = changeBasis(modelStruct.vertices, zdirection, ydirection);
     points = points(:,[1 2]);
