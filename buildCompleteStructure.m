@@ -1,25 +1,27 @@
 function fullBuildingModel = buildCompleteStructure(foundationStructs, connectionStructs, foundationCurves, roofStruct, partsStructs)
     %Need to load either the model or the shape from disk for curve calculations
     %Presumably exists some decent way to precalculate this?
+    roofModel = loadAndMergeModels(roofStruct.filepaths);
     if isfield(roofStruct.shape, 'filepaths')
         roofShape = loadAndMergeModels(roofStruct.shape.filepaths);
     else
-        roofShape = loadAndMergeModels(roofStruct.filepaths);
+        roofShape = roofModel;
     end
     roofShape.slots = roofStruct.slots;
 
     %Attach roof 
     [foundationStructs, roofTransformationMatrix, changedAndNewIndices, roofCurveStructs, roofShape] = fitRoof(foundationStructs, roofShape);
-
+    roofModel.vertices = applyTransformation(roofModel.vertices, roofTransformationMatrix);
+    
     %Add connections
-    [foundationStructs, holeStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, partsStructs);
+    [foundationStructs, connectionStructs] = addConnections(foundationStructs, connectionStructs, partsStructs);
     
     %Retriangulate    
     for i = 1:length(foundationStructs)
         holes = cell.empty();
-        for j = 1:length(holeStructs)
-            if holeStructs(j).connectedWall == i
-                holes{end+1} = holeStructs(j);
+        for j = 1:length(connectionStructs)
+            if connectionStructs(j).connectedWall == i
+                holes{end+1} = connectionStructs(j).holeStruct;
             end
         end
         
@@ -31,9 +33,11 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
         end        
     end
     
+    
     %Remove bad faces
     for i = 1:length(foundationStructs)
-        foundationStructs(i) = removeFacesAboveCurve(foundationStructs(i), changedAndNewIndices{i}, roofCurveStructs(i).curveFunction);
+%         foundationStructs(i) = removeFacesAboveCurve(foundationStructs(i), changedAndNewIndices{i}, roofCurveStructs(i).curveFunction);
+        foundationStructs(i) = removeFacesAboveFaces(foundationStructs(i), changedAndNewIndices{i}, roofCurveStructs(i));
     end
     
     %Curve wall
@@ -52,9 +56,30 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
         for j = 1:length(connectionStructs)
             if strcmp( connectionStructs(j).name, partName ) %CHANGE TO USE UNIQUE ID INSTEAD OF NAME
                 %Adjust transformation to curve
-                adjustmentVector = foundationStructs(connectionStructs(j).connectedWall).adjustment;
+                if connectionStructs(j).connectedWall == 0 %Things connected to roof %CHANGE SO WE CAN HAVE COMPLETE DISCONNECTS TOO
+                    slots = connectionStructs(j).slots;
+                    upVector = connectionStructs(j).upVector;
+                    distances = zeros(size(connectionStructs(j).slots,1),1);
+                    for k = 1:size(connectionStructs(j).slots,1)
+                        [~,distances(k)] = rayFaceIntersect(roofModel.vertices, roofModel.faces, slots(k,:), upVector, 1);
+                    end
+                    
+                    %Choose the highest of the four lowest slots...
+                    heights = distances + slots*upVector';
+                    [~,I] = sort(heights, 'ascend');
+                    lowestTranslation = distances(I(4));
+                    
+                    %Sanity check
+                    if isinf(lowestTranslation) || isnan(lowestTranslation), error('Missed the roof?'), end
+                    
+                    adjustmentVector = lowestTranslation*upVector;
+                else
+                    adjustmentVector = foundationStructs(connectionStructs(j).connectedWall).adjustment;
+                end
+
                 connectionStructs(j).transformationMatrix = getTranslationMatrixFromVector(adjustmentVector) * connectionStructs(j).transformationMatrix;
 
+                
                 %Create instance %OBVIOUSLY DONT DO THIS IN FINAL PRODUCT, JUST SAVE TRANSFORMATION
                 temp = partModel;
                 temp.vertices = applyTransformation(partModel.vertices, connectionStructs(j).transformationMatrix);
@@ -62,10 +87,10 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
             end
         end
     end
-    foundationStruct = mergeModels([foundationStruct collectedParts]);
+    
+    %Merge everything into single model
+    foundationStruct = mergeModels([newModelStruct(foundationStruct.vertices, foundationStruct.faces) collectedParts]);
 
-    %Inser roof into model
-    roof = loadAndMergeModels(roofStruct.filepaths);
-    roof.vertices = applyTransformation(roof.vertices, roofTransformationMatrix);
-    fullBuildingModel = mergeModels([foundationStruct roof]);
+    %Insert roof into model
+    fullBuildingModel = mergeModels([foundationStruct roofModel]);
 end

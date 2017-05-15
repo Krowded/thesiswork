@@ -3,6 +3,10 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     flattenedVertices = vertices(:,1:2);
     flattenedVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
     
+    if isempty(flattenedVertices)
+        warning('No boundary found, possibl')
+    end
+    
     %Using some configuration of alpha shapes might be better. For now,
     %boundary is fine
 %     shape = alphaShape(flattenedVertices(:,1), flattenedVertices(:,2));
@@ -49,7 +53,7 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     
     %Remove any conflicting X values, keeping the larger one (i.e. the one
     %closer to the edge)
-    curveVertices = removeDuplicates1D(curveVertices, [0 1], [1 0]);
+    curveVertices = removeDuplicates1D(curveVertices, [0 1], [1 0]);    
     
     function vertices = removeTail(vertices, direction)
         [~, I] = sort(vertices(:,2), 1, direction);

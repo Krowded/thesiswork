@@ -1,5 +1,5 @@
 function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction)
-    %Get all faces of interest    
+    %Get all faces of interest
     faceIndices = nan(size(modelStruct.faces,1));
     for i = 1:size(modelStruct.faces,1)
         if length(intersect(modelStruct.faces(i,:), indices)) == 3
@@ -35,7 +35,22 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
         centroid = (point1 + point2 + point3) / 3;
         x = centroid(1);
         y = centroid(2);
-        curveY = curveFunction(x);
-        isAboveCurve = isnan(y) || y > curveY;
+        [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, , up, 1);
+        isAboveCurve = distanceToIntersection < 0;
     end
 end
+
+    function wallStruct = matchLocal(wallStruct, targetStruct)
+        up = wallStruct.upVector;
+        indices = [wallStruct.frontTopIndices; wallStruct.backTopIndices];
+        
+        for j = 1:length(indices)
+            index = indices(j);
+            [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, wallStruct.vertices(index,:), up, 1);
+            if ~isnan(distanceToIntersection)
+                wallStruct.vertices(index,:) = wallStruct.vertices(index,:) + distanceToIntersection*wallStruct.upVector;
+            else
+                warning('Distance was found to be NaN')
+            end
+        end
+    end

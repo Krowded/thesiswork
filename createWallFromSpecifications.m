@@ -1,6 +1,6 @@
 function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight, maxHeight, minDepth, maxDepth, normal, up, numberOfLinesX, numberOfLinesY, angleLeft, angleRight)
     %Setup
-    wallStruct = newModelStruct();
+    wallStruct = newWallStruct();
     
     densityX = numberOfLinesX - 1;
     densityY = numberOfLinesY - 1;
@@ -43,6 +43,10 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     wallStruct.frontCornerIndicesRight = wallStruct.frontIndices(((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY));
     wallStruct.backCornerIndicesLeft = wallStruct.backIndices([1 2]);
     wallStruct.backCornerIndicesRight = wallStruct.backIndices([3 4]);
+    
+    %Save top indices for similar stuff
+    wallStruct.frontTopIndices = wallStruct.frontIndices(numberOfLinesY:numberOfLinesY:size(wallStruct.frontIndices,1));
+    wallStruct.backTopIndices = wallStruct.backIndices([2 3]);
     
     %Rotate to fit basis
     z = normal;

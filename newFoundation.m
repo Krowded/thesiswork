@@ -1,9 +1,9 @@
 function [foundationStructs, connections] = newFoundation()
     %Make a new foundation
-    numberOfWalls = 50;
+    numberOfWalls = 7;
     radius = 40000;
     height = 60000;
-    wallThickness = 10;%
+    wallThickness = 5000;
     foundationStructs = buildAnySidedFoundation(numberOfWalls, radius, height, wallThickness);
 
     % % Add roof positioning slots
@@ -31,13 +31,13 @@ function [foundationStructs, connections] = newFoundation()
     maxZ = max(temp*z');
     minZ = min(temp*z');
     slots = [minX maxY maxZ;
-                 maxX maxY maxZ;
-                 maxX minY maxZ;
-                 minX minY maxZ;
-                 minX maxY minZ;
-                 maxX maxY minZ;
-                 maxX minY minZ;
-                 minX minY minZ];
+             maxX maxY maxZ;
+             maxX minY maxZ;
+             minX minY maxZ;
+             minX maxY minZ;
+             maxX maxY minZ;
+             maxX minY minZ;
+             minX minY minZ];
              
     connection = newConnectionStruct();
     connection.name = 'door';
@@ -45,38 +45,41 @@ function [foundationStructs, connections] = newFoundation()
     connection.slots = slots;
     connection.type = 'cut';
     connection.transformationMatrix = [];
-
+    connection.frontVector = foundationStructs(1).frontVector;
+    connection.upVector = foundationStructs(1).upVector;
+    
     connections(1) = connection;
     
-    
-    %Adding chimney
-    temp = foundationStructs(2).vertices;
-    maxX = max(temp*x');
-    minX = min(temp*x');
-    diff = abs(maxX - minX);
-    maxX = 5*diff/20 + minX;
-    minX = 4*diff/20 + minX;
-    maxY = max(temp*y');
-    minY = min(temp*y');
-    diff = abs(maxY - minY);
-    maxY = diff/5 + minY;
-    maxZ = max(temp*z');
-    minZ = min(temp*z');
+
+    %Adding chimney (lazy way)
+    maxY = minY + 2*(maxY-minY);
+    maxX = minX + 2*(maxX-minX);
+    maxZ = minZ + 2*(maxZ-minZ);
     slots = [minX maxY maxZ;
-                 maxX maxY maxZ;
-                 maxX minY maxZ;
-                 minX minY maxZ;
-                 minX maxY minZ;
-                 maxX maxY minZ;
-                 maxX minY minZ;
-                 minX minY minZ];
-             
+             maxX maxY maxZ;
+             maxX minY maxZ;
+             minX minY maxZ;
+             minX maxY minZ;
+             maxX maxY minZ;
+             maxX minY minZ;
+             minX minY minZ];
+%     angle = -pi/2;
+%     r = [cos(angle), 0, sin(angle), 0;
+%          0, 1, 0, 0;
+%          -sin(angle), 0, cos(angle), 0;
+%          0, 0, 0, 1];
+    t = height*[0 1 0] - (radius/2)*[0 0 1];
+    t = getTranslationMatrixFromVector(t);
+    slots = applyTransformation(slots, t);
+     
     connection = newConnectionStruct();
     connection.name = 'chimney';
-    connection.connectedWall  = 2;
+    connection.connectedWall  = 0;
     connection.slots = slots;
-    connection.type = 'dontcut';
+    connection.type = 'nocut';
     connection.transformationMatrix = [];
+    connection.frontVector = foundationStructs(1).frontVector;
+    connection.upVector = foundationStructs(1).upVector;
 
     connections(2) = connection;
 end

@@ -1,6 +1,5 @@
 % Returns indices of faces that the rays intersect
-% If bothDirections is set to true it does line intersection instead of ray
-% intersection
+% If optional_lineIntersection is set to true it does line intersection instead of ray intersection
 function [intersectedFaceIndices] = raysFacesIntersect(vertices, faces, points, direction, optional_lineIntersection, optional_faceIndices)
     %Adjust for optional arguments
     if nargin < 5

@@ -1,4 +1,4 @@
-function topPoints = getTopPercentOfPoints(points, up, percent)
+function [topPoints, topPointIndices] = getTopPercentOfPoints(points, up, percent)
     if nargin < 3
         percent = 10;
     end
@@ -7,7 +7,8 @@ function topPoints = getTopPercentOfPoints(points, up, percent)
     heights = points*up';
     maxHeight = max(heights);
     minHeight = min(heights);
-    topTenPercentIndices = heights > minHeight + cutoff*(maxHeight - minHeight);
+    topPointPlaces = heights > minHeight + cutoff*(maxHeight - minHeight);
     
-    topPoints = points(topTenPercentIndices,:);
+    topPointIndices = find(topPointPlaces);
+    topPoints = points(topPointIndices,:);
 end

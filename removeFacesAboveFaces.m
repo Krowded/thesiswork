@@ -1,5 +1,8 @@
-function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction)
-    %Get all faces of interest    
+function modelStruct = removeFacesAboveFaces(modelStruct, indices, targetStruct)
+    points = modelStruct.vertices;
+    up = modelStruct.upVector;
+
+    %Get all faces of interest
     faceIndices = nan(size(modelStruct.faces,1));
     for i = 1:size(modelStruct.faces,1)
         if length(intersect(modelStruct.faces(i,:), indices)) == 3
@@ -7,13 +10,7 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
         end
     end
     faceIndices = faceIndices(~isnan(faceIndices));
-    
-    %Get 2D points
-    zdirection = modelStruct.frontVector;
-    ydirection = modelStruct.upVector;    
-    points = changeBasis(modelStruct.vertices, zdirection, ydirection);
-    points = points(:,[1 2]);
-    
+        
     %Check midpoint of each line vs curve, if it's above then remove it
     facesToRemove = nan(size(faceIndices));
     for i = 1:length(faceIndices)
@@ -22,7 +19,7 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
         point2 = points(face(2),:);
         point3 = points(face(3),:);
         
-        if isCentroidAboveCurve(point1, point2, point3)
+        if isCentroidAboveRoof(point1, point2, point3)
             facesToRemove(i) = faceIndices(i);
         end
     end
@@ -31,11 +28,9 @@ function modelStruct = removeFacesAboveCurve(modelStruct, indices, curveFunction
     %Remove faces above curve
     modelStruct.faces(facesToRemove,:) = [];
     
-    function isAboveCurve = isCentroidAboveCurve(point1, point2, point3)
+    function isAboveCurve = isCentroidAboveRoof(point1, point2, point3)
         centroid = (point1 + point2 + point3) / 3;
-        x = centroid(1);
-        y = centroid(2);
-        curveY = curveFunction(x);
-        isAboveCurve = isnan(y) || y > curveY;
+        [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, centroid, up, 1);
+        isAboveCurve = distanceToIntersection < 0 && ~isnan(distanceToIntersection);
     end
 end

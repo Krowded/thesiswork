@@ -24,7 +24,7 @@ function vertices = fitModelToCurve(vertices, curve, xdirection, ydirection, min
                 i = i + 1;
             else
                 direction = normalize(vertices(indices(i),:) - newVertices(j-1,:));
-                projection = dot(direction, xdirection);
+                projection = direction*xdirection';
                 distance = averageDistanceBetweenPoints/projection;
                 newVertices(j,:) = newVertices(j-1,:) + direction.*distance;
             end
@@ -33,14 +33,14 @@ function vertices = fitModelToCurve(vertices, curve, xdirection, ydirection, min
         
         vertices = newVertices;
     end
-
+    
     %Adjust vertex height according to curve
     for i = 1:size(vertices,1)
         x = vertices(i,:)*xdirection';
         y = curve(x);
         
         if ~isnan(y)
-            vertices(i,:) = vertices(i,:) - ydirection*dot(vertices(i,:),ydirection) + y*ydirection;
+            vertices(i,:) = vertices(i,:) - ydirection*(vertices(i,:)*ydirection') + y*ydirection;
         end
     end
 end

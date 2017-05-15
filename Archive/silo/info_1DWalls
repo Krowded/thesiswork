@@ -1,0 +1,55 @@
+foundation
+filename wall1.ply normal -1  0  0
+filename wall2.ply normal -0.9511 0 -0.3090
+filename wall3.ply normal -0.8090 0 -0.5878
+filename wall4.ply normal -0.5878 0 -0.8090
+filename wall5.ply normal -0.3090 0 -0.9511
+filename wall6.ply normal 0 0 -1
+filename wall7.ply normal 0.3090 0 -0.9511
+filename wall8.ply normal 0.5878 0 -0.8090
+filename wall9.ply normal 0.8090 0 -0.5878
+filename wall10.ply normal 0.9511 0 -0.3090
+filename wall11.ply normal 1 0 0
+filename wall12.ply normal 0.9511 0 0.3090
+filename wall13.ply normal 0.8090 0 0.5878
+filename wall14.ply normal 0.5878 0 0.8090
+filename wall15.ply normal 0.3090 0 0.9511
+filename wall16.ply normal 0 0 1
+filename wall17.ply normal -0.3090 0 0.9511
+filename wall18.ply normal -0.5878 0 0.8090
+filename wall19.ply normal -0.8090 0 0.5878
+filename wall20.ply normal -0.9511 0 0.3090
+normal 0 0 -1
+up 0 1 0
+style farm
+.
+roof
+filename roof.ply 
+normal 0 0 -1
+up 0 1 0
+style farm
+.
+pipe
+filename pipe.ply
+normal -1 0 0
+up 0 1 0
+style farm
+.
+ladderbig
+filename ladderbig.ply
+normal -1 0 0
+up 0 1 0
+style farm
+.
+platform
+filename platform.ply
+normal -1 0 0
+up 0 1 0
+style farm
+.
+laddersmall
+filename laddersmall.ply
+normal 1 0 0
+up 0 1 0
+style farm
+.

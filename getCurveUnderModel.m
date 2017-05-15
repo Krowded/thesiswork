@@ -19,7 +19,7 @@ function [curve, curveLength] = getCurveUnderModel(curveModel, positionModel)
     if isempty(vertices)
         vertices = curveModel.vertices(curveModelDepths > minDepth,:);
         
-        %If still empty, just grab all vertices
+        %If still empty, just return NaN (and send a warning)
         if isempty(vertices)
             warning('No curve vertices found, returning NaN function')
             curveLength = 0;

@@ -5,4 +5,7 @@ function connectionStruct = newConnectionStruct()
     connectionStruct.slots = [];
     connectionStruct.type = '';
     connectionStruct.transformationMatrix = [];
+    connectionStruct.holeStruct = newHoleStruct();
+    connectionStruct.frontVector = [];
+    connectionStruct.upVector = [];
 end

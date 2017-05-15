@@ -1,4 +1,4 @@
 profile clear
 profile on
-testDatabaseIntegration
+testFullProgram
 profile viewer

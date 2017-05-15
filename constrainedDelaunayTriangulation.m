@@ -24,12 +24,6 @@ function [faces] = constrainedDelaunayTriangulation(vertices, vertexIndices, edg
         %Exclude things inside of the edges
         outside = ~isInterior(constrainedTriangulation);
         faces = constrainedTriangulation.ConnectivityList(outside,:);
-        
-        global DEBUG;
-        if DEBUG == 1
-            DT = triangulation(faces, constrainedTriangulation.Points);
-            triplot(DT);
-        end
     end
     
     %Restore indices to correct values

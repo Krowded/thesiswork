@@ -1,3 +1,4 @@
+%Add vertices and faces to fill empty space between walls and roof
 function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct, roofStruct)
     up = foundationStruct.upVector;
     
@@ -25,17 +26,23 @@ function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct
         return;
     end
     
-    %Get contour of roof    
+    %Get contour of roof
     roofContour = extractSimplifiedContour3D(interestingRoofVertices, up);
     
-    %Add roof
+    %Add roof connection
+    
+    %Set the top as the front
     foundationStruct.frontIndices = interestingFoundationVertexIndices';
     endIndex = size(foundationStruct.vertices,1);
     
-    %Add second set of vertices (all "walls" are two sided)
+    betterpcshow(foundationStruct.vertices(foundationStruct.frontIndices,:))
+    
+    %Add second set of vertices (since all "walls" are two sided)
     foundationStruct.vertices = [foundationStruct.vertices; foundationStruct.vertices(interestingFoundationVertexIndices,:) - 0.01*up];
     foundationStruct.backIndices = ((endIndex+1):size(foundationStruct.vertices))';
     foundationStruct.frontVector = up;
+    
+    
     
     %Carve hole in roof
     [foundationStruct, holeStruct] = createHoleFromContour(foundationStruct, roofContour);

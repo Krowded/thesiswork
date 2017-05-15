@@ -10,7 +10,7 @@ function foundationStructs = buildAnySidedFoundation(numberOfWalls, radius, heig
     
     width = radius * tand(angleBetweenWalls/2);
     
-    foundationStructs = newModelStruct();
+    foundationStructs = newWallStruct();
     for i = 1:numberOfWalls
         rads = -((i-1)*angleBetweenWalls/180)*pi;
         R = rotationVectorToMatrix(rads*up);
