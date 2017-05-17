@@ -50,7 +50,6 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     %Insert parts into model
     collectedParts = newModelStruct();
     for i = 1:length(partsStructs)
-        partModel = loadAndMergeModels(partsStructs{i}.filepaths);
         partName = partsStructs{i}.name;
         
         for j = 1:length(connectionStructs)
@@ -81,8 +80,8 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
 
                 
                 %Create instance %OBVIOUSLY DONT DO THIS IN FINAL PRODUCT, JUST SAVE TRANSFORMATION
-                temp = partModel;
-                temp.vertices = applyTransformation(partModel.vertices, connectionStructs(j).transformationMatrix);
+                temp = loadAndMergeModels(partsStructs{i}.filepaths);
+                temp.vertices = applyTransformation(temp.vertices, connectionStructs(j).transformationMatrix);
                 collectedParts = mergeModels([collectedParts, temp]);
             end
         end

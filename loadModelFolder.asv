@@ -16,7 +16,7 @@ function returnStructure = loadModelFolder(folderpath)
             continue;
         end
         
-        returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'style', string.empty, 'type', [], 'attributes', string.empty);
+        returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'type', [], 'attributes', string.empty);
         returnStructure.(partName).name = partName;
         returnStructure.(partName).models = [];
         
@@ -64,7 +64,7 @@ function returnStructure = loadModelFolder(folderpath)
                     end
                 case 'style'
                     style = string(tokens{2});
-                    returnStructure.(partName).style = [returnStructure.(partName).style; style];
+                    returnStructure.(partName).style = [returnStructure.(partName).style style];
                 case 'shape' %Shape property is another filename
                     filepath = folderpath + string(tokens{2}); %Append if more than one shape has been given
                     returnStructure.(partName).shape = mergeModels([returnStructure.(partName).shape loadAndMergeModels(filepath)]);

@@ -10,13 +10,20 @@ function wallStructs = curveWalls(wallStructs, curveStructs)
     end
     [wallStructs(end), wallStructs(1), wallStructs(end-1)] = localCurveWallAndCorners(wallStructs(end), wallStructs(1), wallStructs(end-1));    
     
-    function [wallStruct, wallStructToTheLeft, wallStructToTheRight] = localCurveWallAndCorners(wallStruct, wallStructToTheLeft, wallStructToTheRight)
+    function [wallStruct, wallStructToTheLeft, wallStructToTheRight] = localCurveWallAndCorners(wallStruct, wallStructToTheLeft, wallStructToTheRight)       
+        %Get min and max so corners can scale properly
         frontVector = wallStruct.frontVector;
         upVector = wallStruct.upVector;
+        heights = wallStruct.vertices(wallStruct.frontIndices,:)*upVector';
+        minHeight = min(heights);
+        maxHeight = max(heights);
+        scale = (maxHeight - minHeight)/100;
         
-        for j = 1:length(curveStructs)
+        %Get size of contribution from each curve
+        shares = zeros(length(curveStructs),1);
+        for j = 1:length(curveStructs)            
             %Assume frontVector in same plane as all wall frontnormals
-            angle = acos(dot(wallStruct.frontVector, curveStructs(j).normal));
+            angle = acos(dot(frontVector, curveStructs(j).normal));
             
             if angle > pi/2 %Nothing happens if over 90 degrees
                 continue;
@@ -32,31 +39,32 @@ function wallStructs = curveWalls(wallStructs, curveStructs)
             end
 
             %Scale curve
-            share = max(cos(angle),0);
-            curveFunction = @(xq) curveStructs(j).curveFunction(xq)*share;
-             
-            %Get min and max so corners can scale properly
-            minHeight = min(wallStruct.vertices(wallStruct.frontIndices,:)*upVector');
-            maxHeight = max(wallStruct.vertices(wallStruct.frontIndices,:)*upVector');
-            
-            %Calculate biggest adjustment
-            scale = (maxHeight - minHeight)/100;
-            maxAdjustment = share * scale * curveStructs(j).span;
-            
-            %Curve the wall
-            wallStruct = curveWall(wallStruct, wallStruct.frontIndices, curveFunction, frontVector, minHeight, maxHeight);
-            wallStruct.vertices(wallStruct.backIndices,:) = wallStruct.vertices(wallStruct.backIndices,:) - maxAdjustment*frontVector;
-%             wallStruct.vertices(wallStruct.frontIndices,:) = wallStruct.vertices(wallStruct.frontIndices,:) + maxAdjustment*wallStruct.frontVector;
-            wallStruct.adjustment = wallStruct.adjustment - maxAdjustment*frontVector;
-
-            %And adjacent corners
-            wallStructToTheLeft = curveWall(wallStructToTheLeft, wallStructToTheLeft.frontCornerIndicesRight, curveFunction, frontVector, minHeight, maxHeight);
-            wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) = wallStructToTheLeft.vertices(wallStructToTheLeft.backCornerIndicesRight,:) - maxAdjustment*frontVector;
-%             wallStructToTheLeft.vertices(wallStructToTheLeft.frontCornerIndicesRight,:) = wallStructToTheLeft.vertices(wallStructToTheLeft.frontCornerIndicesRight,:) + maxAdjustment*frontVector; 
-            
-            wallStructToTheRight = curveWall(wallStructToTheRight, wallStructToTheRight.frontCornerIndicesLeft, curveFunction, frontVector, minHeight, maxHeight);
-            wallStructToTheRight.vertices(wallStructToTheRight.backCornerIndicesLeft,:) = wallStructToTheRight.vertices(wallStructToTheRight.backCornerIndicesLeft,:) - maxAdjustment*frontVector;
-%             wallStructToTheRight.vertices(wallStructToTheRight.frontCornerIndicesLeft,:) = wallStructToTheRight.vertices(wallStructToTheRight.frontCornerIndicesLeft,:) + maxAdjustment*frontVector;
+            shares(j) = max(cos(angle),0);
         end
+        %Normalize shares so it adds up to 1
+        shares = shares./sum(shares);
+        
+        %Gather contribution from each curve function
+        curveFunction = @(xq) 0;
+        maxAdjustment = 0;
+        for j = 1:length(curveStructs)
+            curveFunction = @(xq) curveFunction(xq) + curveStructs(j).curveFunction(xq)*shares(j);
+             
+            %Calculate biggest adjustment
+            maxAdjustment = max(maxAdjustment, (shares(j) * scale * curveStructs(j).span));
+        end
+            
+        %Curve the wall
+        wallStruct = curveIndicesLocal(wallStruct, wallStruct.frontIndices, wallStruct.backIndices, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
+        wallStruct.adjustment = wallStruct.adjustment - maxAdjustment*frontVector; %Addition, just in case adjustment is done somewhere else too
+
+        %And adjacent corners
+        wallStructToTheLeft = curveIndicesLocal(wallStructToTheLeft, wallStructToTheLeft.frontCornerIndicesRight, wallStruct.backCornerIndicesRight, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
+        wallStructToTheRight = curveIndicesLocal(wallStructToTheRight, wallStructToTheRight.frontCornerIndicesLeft, wallStruct.backCornerIndicesLeft, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
+    end
+
+    function [wallStruct] = curveIndicesLocal(wallStruct, frontIndices, backIndices, adjustment, curveFunction, curveDirection, minHeight, maxHeight)
+        wallStruct = curveWall(wallStruct, frontIndices, curveFunction, curveDirection, minHeight, maxHeight);
+        wallStruct.vertices(backIndices,:) = wallStruct.vertices(backIndices,:) - adjustment*curveDirection; 
     end
 end

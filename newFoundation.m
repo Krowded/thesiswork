@@ -33,11 +33,11 @@ function [foundationStructs, connections] = newFoundation()
     slots = [minX maxY maxZ;
              maxX maxY maxZ;
              maxX minY maxZ;
-             minX minY maxZ;
-             minX maxY minZ;
-             maxX maxY minZ;
-             maxX minY minZ;
-             minX minY minZ];
+             minX minY maxZ];
+%              minX maxY minZ;
+%              maxX maxY minZ;
+%              maxX minY minZ;
+%              minX minY minZ];
              
     connection = newConnectionStruct();
     connection.name = 'door';
@@ -58,11 +58,11 @@ function [foundationStructs, connections] = newFoundation()
     slots = [minX maxY maxZ;
              maxX maxY maxZ;
              maxX minY maxZ;
-             minX minY maxZ;
-             minX maxY minZ;
-             maxX maxY minZ;
-             maxX minY minZ;
-             minX minY minZ];
+             minX minY maxZ];
+%              minX maxY minZ;
+%              maxX maxY minZ;
+%              maxX minY minZ;
+%              minX minY minZ];
 %     angle = -pi/2;
 %     r = [cos(angle), 0, sin(angle), 0;
 %          0, 1, 0, 0;

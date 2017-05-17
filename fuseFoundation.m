@@ -4,10 +4,11 @@ function foundationStruct = fuseFoundation(foundationStructs, roofStruct)
         foundationStructs(i) = fuseTopOfWall(foundationStructs(i));
     end
 
-
+foundationStruct = mergeModels(foundationStructs);
+    
     %Put walls together
-    foundationStruct = fuseWalls(foundationStructs);
+%     foundationStruct = fuseWalls(foundationStructs);
 
     %Add vertices and faces to fill empty space between wall and roof
-%     foundationStruct = createFoundationRoofConnection(foundationStruct, roofStruct);
+%      foundationStruct = createFoundationRoofConnection(foundationStruct, roofStruct);
 end

@@ -7,6 +7,7 @@ function resultCursor = findInDB(keys, values)
     for i = 1:length(keys)
         query.put(char(keys(i)),char(values(i)));
     end
+
     projection = BasicDBObject();
     projection.put('_id',0);
     

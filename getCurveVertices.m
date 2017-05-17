@@ -1,8 +1,15 @@
 function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     vertices = changeBasis(vertices, zdirection, ydirection);
     flattenedVertices = vertices(:,1:2);
-    flattenedVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
+    shapeVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
     
+    if isempty(shapeVertices)
+        warning('Found no shape around vertices. Assuming curve is straight line.')
+        curveVertices = [0 0; 0 1];
+        return;
+    end
+
+
     %Using some configuration of alpha shapes might be better. For now,
     %boundary is fine
 %     shape = alphaShape(flattenedVertices(:,1), flattenedVertices(:,2));
@@ -14,14 +21,14 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     lastOneAdded = 0; %Keep track of if we are in a chain of adding, otherwise we need to add current vertex as well
     addedIndices = [];
    
-    for j = 1:(size(flattenedVertices,1)-1)
-        edge = flattenedVertices(j+1,:) - flattenedVertices(j,:);
+    for j = 1:(size(shapeVertices,1)-1)
+        edge = shapeVertices(j+1,:) - shapeVertices(j,:);
         if edge(2) > 0
             if ~lastOneAdded
-                curveVertices(end+1,:) = flattenedVertices(j,:);
+                curveVertices(end+1,:) = shapeVertices(j,:);
                 addedIndices(end+1) = j;
             end
-            curveVertices(end+1,:) = flattenedVertices(j+1,:);
+            curveVertices(end+1,:) = shapeVertices(j+1,:);
             addedIndices(end+1) = j+1;
             lastOneAdded = 1;
         else
@@ -30,16 +37,16 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     end
     
     %Finish loop by checking connection between first and last index
-    lastIndex = size(flattenedVertices,1);
+    lastIndex = size(shapeVertices,1);
     
-    edge = flattenedVertices(1,:) - flattenedVertices(lastIndex,:);
+    edge = shapeVertices(1,:) - shapeVertices(lastIndex,:);
     if edge(2) > 0
         if ~ismember(lastIndex, addedIndices)
-            curveVertices(end+1,:) = flattenedVertices(lastIndex,:);
+            curveVertices(end+1,:) = shapeVertices(lastIndex,:);
         end
         
         if ~ismember(1, addedIndices)
-            curveVertices(end+1,:) = flattenedVertices(1,:);
+            curveVertices(end+1,:) = shapeVertices(1,:);
         end
     end
     

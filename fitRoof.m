@@ -8,12 +8,13 @@ function [foundationStructs, roofM, changedAndNewIndices, roofCurveStructs, newR
 %     lowestChangableHeight = min(foundationStructs(1).slots*foundationStructs(1).upVector');
 %     changedAndNewIndices = cell(1,length(foundationStructs));
 %     for i = 1:length(foundationStructs)
-%         %TODO: CHANGE CURVE CALCULATION TO LINE-TRIANGLE INTERSECTION WITH A SUBSET OF FACES FOR EXACT VALUES (PROBABLY SLOWER THOUGH)
+	
 %         curveStruct = getCurveUnderRoof(newRoofShape, foundationStructs(i));
 %         roofCurveStructs(i) = curveStruct;
 %         [foundationStructs(i), changedAndNewIndices{i}] = fitWallToRoofCurve(foundationStructs(i), lowestChangableHeight, curveStruct.curveFunction, curveStruct.curveLength);
 %     end
 
+    %Calculate curves
     roofCurveStructs = newModelStruct();
     changedAndNewIndices = cell(length(foundationStructs),1);
     for i = 1:length(foundationStructs)
@@ -77,16 +78,33 @@ function [foundationStructs, roofM, changedAndNewIndices, roofCurveStructs, newR
 
     %Projects each point to the face above it and adjusts its height to match
     function [wallStruct, changedAndNewIndices] = matchLocal(wallStruct, targetStruct)
-        up = wallStruct.upVector;
+        front = wallStruct.frontVector';
+        side = wallStruct.sideVector';
+        xvertices = targetStruct.vertices*side;
+        zvertices = targetStruct.vertices*front;
+        maxX = max(xvertices);
+        minX = min(xvertices);
+        maxZ = max(zvertices);
+        minZ = min(zvertices);        
+        
         changedAndNewIndices = [wallStruct.frontTopIndices; wallStruct.backTopIndices];
+
         
         for j = 1:length(changedAndNewIndices)
             index = changedAndNewIndices(j);
-            [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, wallStruct.vertices(index,:), up, 1);
-            if ~isnan(distanceToIntersection)
-                wallStruct.vertices(index,:) = wallStruct.vertices(index,:) + distanceToIntersection*wallStruct.upVector;
-            else
-                warning('Distance was found to be NaN')
+            vertex = wallStruct.vertices(index,:);
+            
+            %Check if outside
+            x = vertex*side;
+            z = vertex*front;
+            
+            if ~(x > maxX || x < minX || z > maxZ || z < minZ)
+                [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, vertex, wallStruct.upVector, 1);
+                if ~isnan(distanceToIntersection)
+                    wallStruct.vertices(index,:) = vertex + distanceToIntersection*wallStruct.upVector;
+                else
+                    %No intersection found
+                end
             end
         end
     end

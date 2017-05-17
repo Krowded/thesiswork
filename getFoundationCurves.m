@@ -5,7 +5,7 @@ function curveStructs = getFoundationCurves(wallStructs)
         lowestHighestPoint = min(lowestHighestPoint, max(wallStructs(i).vertices*wallStructs(i).upVector'));
     end
 
-    %lowestHighestPoint = Inf; %Remove height limit
+    lowestHighestPoint = Inf; %Remove height limit
 
     curveStructs = struct('vertices', [], 'curveFunction', [], 'curveLength', [], 'span', [], 'normal', []);
     for i = 1:length(wallStructs)

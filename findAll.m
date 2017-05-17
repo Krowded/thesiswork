@@ -8,7 +8,15 @@ function models = findAll(keys, values)
         cursor.next;
         objString = char(cursor.curr.toString);
         model = jsondecode(objString);
-        model.filepaths = string(model.filepaths); %Maybe generalize...
+
+        fields = fieldnames(model);
+        for j = 1:length(fields)
+            if iscell(model.(fields{j}))
+                model.(fields{j}) = strtrim(string(model.(fields{j})));
+            end
+        end
+
+%         model.filepaths = string(model.filepaths); %Maybe generalize...
         models{i} = model;
     end
 end

@@ -20,7 +20,7 @@ function [foundationStructs, connectionStructs] = addConnections(foundationStruc
         upVector = connectionStructs(i).upVector;
         
         %Match slots
-        M = matchSlots(matchingPart.slots, connectionStructs(i).slots, 'non-uniform', frontVector, upVector);
+        M = matchSlots(matchingPart.slots, connectionStructs(i).slots, 'uniform', frontVector, upVector);
 
         if strcmp(connectionStructs(i).type, 'cut')
             %Get contour and move to wall
