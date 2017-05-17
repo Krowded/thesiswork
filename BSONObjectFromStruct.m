@@ -13,22 +13,22 @@ function bsonObject = BSONObjectFromStruct(structToConvert)
             for j = 1:numberOfStructs
                 modifiedContent(j) = BSONObjectFromStruct(content(j));
             end
-        elseif length(content) > 1
-            modifiedContent = BasicDBList;
-            for j = 1:length(content)
-                if isstring(content(j))
-                    temp = char(content(j));
-                else
-                    temp = content(j);
+        elseif isstring(content)
+            if length(content) > 1
+                modifiedContent = BasicDBList;
+                for j = 1:length(content)
+                    if isstring(content(j))
+                        temp = char(content(j));
+                    else
+                        temp = content(j);
+                    end
+                    modifiedContent.put(num2str(j-1), temp);
                 end
-                modifiedContent.put(num2str(j-1), temp);
-            end
-        else 
-            if isstring(content)
-                modifiedContent = char(content);
             else
-                modifiedContent = content;
+                modifiedContent = char(content);
             end
+        else
+            modifiedContent = content;
         end
         
         if isempty(modifiedContent), continue, end

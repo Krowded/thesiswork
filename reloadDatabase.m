@@ -39,10 +39,7 @@ for i = 1:length(infoFiles)
             part.curves = getFoundationCurves(part.models);
             foundation = part;
         end
-        
-        %If walls can be known, maybe precalculate roof curves too?
-        %TODO
-        
+
         %Remove vertices, faces etc that we don't need in the DB
         cleanPart = part;
         cleanPart = rmfield(cleanPart, 'models');

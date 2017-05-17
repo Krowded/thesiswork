@@ -17,7 +17,7 @@ function curveStruct = getWallCurve(wallStruct)
     
     %Make return struct
     curveStruct.vertices = curveVertices;
-    curveStruct.curveFunction = 'linear';
+    curveStruct.curveFunction = string('linear');
     curveStruct.curveLength = size(curveVertices,1);
     curveStruct.span = norm(max(curveVertices(:,1)) - min(curveVertices(:,1)));
     curveStruct.normal = wallStruct.frontVector;

@@ -1,12 +1,12 @@
 function [foundationCurves, roofStruct, partsStructs] = findStyle(style, partNames)
-    roofStruct = findFirst([string('name'), string('style')], [string('roof'), style]);
-    foundation = findFirst([string('name'), string('style')], [string('foundation'), style]);
+    roofStruct = findRandom([string('name'), string('style')], [string('roof'), style]);
+    foundation = findRandom([string('name'), string('style')], [string('foundation'), style]);
     foundationCurves = foundation.curves;
     
     partsStructs = cell.empty;
     for i = 1:length(partNames)
         name = partNames(i);
-        foundParts = findAll([string('name'), string('style')], [name, style]);
+        foundParts = findRandom([string('name'), string('style')], [string(name), string(style)]);
         
         if isempty(foundParts)
             warning(['No part with name [' char(name) '] found'])

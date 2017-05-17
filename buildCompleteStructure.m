@@ -58,15 +58,23 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
                 if connectionStructs(j).connectedWall == 0 %Things connected to roof %CHANGE SO WE CAN HAVE COMPLETE DISCONNECTS TOO
                     slots = connectionStructs(j).slots;
                     upVector = connectionStructs(j).upVector;
-                    distances = zeros(size(connectionStructs(j).slots,1),1);
-                    for k = 1:size(connectionStructs(j).slots,1)
+                    heights = slots*upVector';
+                    [~, I] = sort(heights, 'ascend');
+                    heights = heights(I(1:4));
+                    slots = slots(I(1:4),:); %Keep only the four lowest slots (since ray tracing is pretty slow)
+
+                    distances = zeros(size(slots,1),1);
+                    for k = 1:size(slots,1)
                         [~,distances(k)] = rayFaceIntersect(roofModel.vertices, roofModel.faces, slots(k,:), upVector, 1);
+                        if isnan(distances(k))
+                            warning('NaN distance found');
+                        end
                     end
-                    
-                    %Choose the highest of the four lowest slots...
-                    heights = distances + slots*upVector';
-                    [~,I] = sort(heights, 'ascend');
-                    lowestTranslation = distances(I(4));
+
+                    %Add and choose the lowest resulting height
+                    heights = distances + heights;
+                    [~,I] = min(heights);
+                    lowestTranslation = distances(I);
                     
                     %Sanity check
                     if isinf(lowestTranslation) || isnan(lowestTranslation), error('Missed the roof?'), end

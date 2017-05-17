@@ -12,11 +12,10 @@ function models = findAll(keys, values)
         fields = fieldnames(model);
         for j = 1:length(fields)
             if iscell(model.(fields{j}))
-                model.(fields{j}) = strtrim(string(model.(fields{j})));
+                model.(fields{j}) = string(model.(fields{j}));
             end
         end
 
-%         model.filepaths = string(model.filepaths); %Maybe generalize...
         models{i} = model;
     end
 end

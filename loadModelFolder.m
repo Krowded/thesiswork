@@ -17,7 +17,7 @@ function returnStructure = loadModelFolder(folderpath)
         end
         
         returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'style', string.empty, 'type', [], 'attributes', string.empty);
-        returnStructure.(partName).name = partName;
+        returnStructure.(partName).name = string(partName);
         returnStructure.(partName).models = [];
         
         %Read line by line until '.'
@@ -74,13 +74,13 @@ function returnStructure = loadModelFolder(folderpath)
                     returnStructure.(partName).type = type;
                 case 'attribute' %Used for later additions
                     attribute = string(tokens{2});
-                    returnStructure.(partName).attributes(end+1) = attribute;                        
+                    returnStructure.(partName).attributes = [returnStructure.(partName).attributes; attribute];                        
                 otherwise
                     message = ['Unknown classifier: ' classifier ' when attempting to load ' folderpath];
                     error(message);
             end
         
             line = fgetl(fileID);
-        end        
+        end
     end
 end
