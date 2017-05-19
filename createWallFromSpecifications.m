@@ -42,7 +42,7 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     wallStruct.frontCornerIndicesLeft = wallStruct.frontIndices(1:numberOfLinesY);
     wallStruct.frontCornerIndicesRight = wallStruct.frontIndices(((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY));
     wallStruct.backCornerIndicesLeft = wallStruct.backIndices([1 2]);
-    wallStruct.backCornerIndicesRight = wallStruct.backIndices([3 4]);
+    wallStruct.backCornerIndicesRight = wallStruct.backIndices([4 3]);
     
     %Save top indices for similar stuff
     wallStruct.frontTopIndices = wallStruct.frontIndices(numberOfLinesY:numberOfLinesY:size(wallStruct.frontIndices,1));

@@ -11,26 +11,30 @@ function modelStruct = removeFacesAboveFaces(modelStruct, indices, targetStruct)
     end
     faceIndices = faceIndices(~isnan(faceIndices));
         
-    %Check midpoint of each line vs curve, if it's above then remove it
-    facesToRemove = nan(size(faceIndices));
-    for i = 1:length(faceIndices)
-        face = modelStruct.faces(faceIndices(i),:);
+    %Check midpoint of each line vs curve, if it's above then mark for removal
+    facesToRemove = false(size(faceIndices,1),1);
+    faces = modelStruct.faces(faceIndices,:);
+    for i = 1:size(faces,1)
+        face = faces(i,:);
         point1 = points(face(1),:);
         point2 = points(face(2),:);
         point3 = points(face(3),:);
         
-        if isCentroidAboveRoof(point1, point2, point3)
-            facesToRemove(i) = faceIndices(i);
-        end
-    end
-    facesToRemove = facesToRemove(~isnan(facesToRemove));
-    
-    %Remove faces above curve
-    modelStruct.faces(facesToRemove,:) = [];
-    
-    function isAboveCurve = isCentroidAboveRoof(point1, point2, point3)
         centroid = (point1 + point2 + point3) / 3;
         [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, centroid, up, 1);
         isAboveCurve = distanceToIntersection < 0 && ~isnan(distanceToIntersection);
+        
+        if isAboveCurve%isCentroidAboveRoof(point1, point2, point3)
+            facesToRemove(i) = 1;
+        end
     end
+    
+    %Remove said faces
+    modelStruct.faces(faceIndices(facesToRemove),:) = [];
+    
+%     function isAboveCurve = isCentroidAboveRoof(point1, point2, point3)
+%         centroid = (point1 + point2 + point3) / 3;
+%         [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, centroid, up, 1);
+%         isAboveCurve = distanceToIntersection < 0 && ~isnan(distanceToIntersection);
+%     end
 end

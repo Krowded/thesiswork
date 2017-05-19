@@ -2,9 +2,10 @@
 %of contourVertices. If up is not provided, y is assumed to be the up
 %vector.
 %Also assumes that all values in the normal direction are identical
-function slotVertices = slotsFromContour(contourVertices, normal, up)   
+function slotVertices = slotsFromContour(contourVertices, front, up)
+    z = front;
     y = up;
-    x = normalize(cross(y, normal));
+    x = normalize(cross(y, z));
     
     xvalues = contourVertices*x';
     yvalues = contourVertices*y';
@@ -20,5 +21,5 @@ function slotVertices = slotsFromContour(contourVertices, normal, up)
     slotVertices(4,:) = minx*x + miny*y;
     
     %Restore depth
-    slotVertices = slotVertices - normal.*slotVertices + normal.*dot(normal,contourVertices(1,:));
+    slotVertices = slotVertices - z.*slotVertices + z.*dot(z,contourVertices(1,:));
 end

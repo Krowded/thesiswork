@@ -64,6 +64,6 @@ function [intersectedFaceIndex, distanceToIntersection] = rayFaceIntersect(verti
             continue;
         end
     end
-    
+
     intersectedFaceIndex = optional_faceIndices(intersectedFaceIndex);
 end

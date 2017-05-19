@@ -35,16 +35,18 @@ function foundationStruct = fuseWalls(foundationStructs)
     stripLeftFront = foundationStructs(1).frontCornerIndicesRight;
     stripRightBack = foundationStructs(1).backCornerIndicesRight;
     
-    frontFacesStartingIndex = (numberOfWalls-1)*numberOfFacesPerPairOfWalls + 1;
+    frontFacesStartingIndex = numberOfWalls*numberOfFacesPerPairOfWalls + 1;
     backFacesStartingIndex = frontFacesStartingIndex + numberOfFacesPerPairFront;
     newFaces(frontFacesStartingIndex:(frontFacesStartingIndex + numberOfFacesPerPairFront - 1),:) = fuseTwoStripsLocal(stripLeftFront, stripRightFront);
-    newFaces(backFacesStartingIndex:end,:) = fuseTwoStripsLocal(stripLeftBack, stripRightBack);    
+    newFaces(backFacesStartingIndex:(backFacesStartingIndex + numberOfFacesPerPairBack - 1),:) = fuseTwoStripsLocal(stripLeftBack, stripRightBack);    
 
     %Collect all foundation structs in a single struct
     foundationStruct = mergeModels(foundationStructs);
     
     %Append new faces
     foundationStruct.faces = [foundationStruct.faces; newFaces];
+    
+    fo
     
     function [newFaces] = fuseTwoStripsLocal(stripLeft, stripRight)
         leftSize = size(stripLeft,1);

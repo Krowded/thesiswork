@@ -3,7 +3,7 @@ function foundationStructs = buildAnySidedFoundation(numberOfWalls, radius, heig
     front = [0 0 1];
     
     %Detail
-    linesX = 8;
+    linesX = 20;
     linesY = 11;
     
     angleBetweenWalls = 360/numberOfWalls;

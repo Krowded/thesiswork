@@ -1,9 +1,9 @@
 function [foundationStructs, connections] = newFoundation()
     %Make a new foundation
-    numberOfWalls = 7;
+    numberOfWalls = 6;
     radius = 40000;
     height = 60000;
-    wallThickness = 5000;
+    wallThickness = 100;
     foundationStructs = buildAnySidedFoundation(numberOfWalls, radius, height, wallThickness);
 
     % % Add roof positioning slots

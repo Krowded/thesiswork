@@ -43,6 +43,13 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     %Curve wall
     foundationStructs = curveWalls(foundationStructs, foundationCurves);
 
+        %Fit roof again.....
+        [foundationStructs, ~, changedAndNewIndices] = fitRoof(foundationStructs, roofShape);
+        %Remove bad faces again.....
+        for i = 1:length(foundationStructs)
+            foundationStructs(i) = removeFacesAboveFaces(foundationStructs(i), changedAndNewIndices{i}, roofCurveStructs(i));
+        end
+    
     %Create missing parts of foundation (roof connection)
     foundationStruct = fuseFoundation(foundationStructs, roofShape);
 %     foundationStruct = mergeModels(foundationStructs)
@@ -50,13 +57,13 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     %Insert parts into model
     collectedParts = newModelStruct();
     for i = 1:length(partsStructs)
-        partName = partsStructs{i}.name;
+        part = partsStructs{i};
         
         for j = 1:length(connectionStructs)
-            if strcmp( connectionStructs(j).name, partName ) %CHANGE TO USE UNIQUE ID INSTEAD OF NAME
+            if strcmp( connectionStructs(j).name, part.name ) %CHANGE TO USE UNIQUE ID INSTEAD OF NAME
                 %Adjust transformation to curve
                 if connectionStructs(j).connectedWall == 0 %Things connected to roof %CHANGE SO WE CAN HAVE COMPLETE DISCONNECTS TOO
-                    slots = connectionStructs(j).slots;
+                    slots = applyTransformation(partsStructs{i}.slots, connectionStructs(j).transformationMatrix);
                     upVector = connectionStructs(j).upVector;
                     heights = slots*upVector';
                     [~, I] = sort(heights, 'ascend');

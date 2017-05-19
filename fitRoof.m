@@ -78,6 +78,7 @@ function [foundationStructs, roofM, changedAndNewIndices, roofCurveStructs, newR
 
     %Projects each point to the face above it and adjusts its height to match
     function [wallStruct, changedAndNewIndices] = matchLocal(wallStruct, targetStruct)
+        up = wallStruct.upVector;
         front = wallStruct.frontVector';
         side = wallStruct.sideVector';
         xvertices = targetStruct.vertices*side;
@@ -89,23 +90,26 @@ function [foundationStructs, roofM, changedAndNewIndices, roofCurveStructs, newR
         
         changedAndNewIndices = [wallStruct.frontTopIndices; wallStruct.backTopIndices];
 
-        
-        for j = 1:length(changedAndNewIndices)
-            index = changedAndNewIndices(j);
-            vertex = wallStruct.vertices(index,:);
+        tempTargetVertices = targetStruct.vertices;
+        tempTargetFaces = targetStruct.faces;
+
+        vertices = wallStruct.vertices(changedAndNewIndices,:);
+        for j = 1:size(vertices,1)
+            vertex = vertices(j,:);
             
             %Check if outside
             x = vertex*side;
             z = vertex*front;
             
             if ~(x > maxX || x < minX || z > maxZ || z < minZ)
-                [~, distanceToIntersection] = rayFaceIntersect(targetStruct.vertices, targetStruct.faces, vertex, wallStruct.upVector, 1);
+                [~, distanceToIntersection] = rayFaceIntersect(tempTargetVertices, tempTargetFaces, vertex, up, 1);
                 if ~isnan(distanceToIntersection)
-                    wallStruct.vertices(index,:) = vertex + distanceToIntersection*wallStruct.upVector;
+                    vertices(j,:) = vertex + distanceToIntersection*up;
                 else
                     %No intersection found
                 end
             end
         end
+        wallStruct.vertices(changedAndNewIndices,:) = vertices;
     end
 end

@@ -15,10 +15,16 @@ function curveStruct = getWallCurve(wallStruct)
     curveVertices(:,2) = (curveVertices(:,2) - minY).*normalizer;
     curveVertices(:,1) = (curveVertices(:,1) - minX).*normalizer; %Same scale, different cutoff
     
+    %Current depths
+    minX = min(curveVertices(:,1));
+    maxX = max(curveVertices(:,1));
+    baseX = curveVertices(i,1);
+    
     %Make return struct
     curveStruct.vertices = curveVertices;
     curveStruct.curveFunction = string('linear');
     curveStruct.curveLength = size(curveVertices,1);
-    curveStruct.span = norm(max(curveVertices(:,1)) - min(curveVertices(:,1)));
+    curveStruct.span = maxX - minX;
+    curveStruct.backSpan = baseX - minX;
     curveStruct.normal = wallStruct.frontVector;
 end

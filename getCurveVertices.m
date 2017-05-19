@@ -38,7 +38,6 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     
     %Finish loop by checking connection between first and last index
     lastIndex = size(shapeVertices,1);
-    
     edge = shapeVertices(1,:) - shapeVertices(lastIndex,:);
     if edge(2) > 0
         if ~ismember(lastIndex, addedIndices)

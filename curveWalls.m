@@ -46,25 +46,22 @@ function wallStructs = curveWalls(wallStructs, curveStructs)
         
         %Gather contribution from each curve function
         curveFunction = @(xq) 0;
-        maxAdjustment = 0;
+%         maxAdjustment = 0;
         for j = 1:length(curveStructs)
             curveFunction = @(xq) curveFunction(xq) + curveStructs(j).curveFunction(xq)*shares(j);
              
-            %Calculate biggest adjustment
-            maxAdjustment = max(maxAdjustment, (shares(j) * scale * curveStructs(j).span));
+%             %Calculate biggest adjustment
+%             maxAdjustment = max(maxAdjustment, (shares(j) * scale * curveStructs(j).backSpan));
         end
             
         %Curve the wall
-        wallStruct = curveIndicesLocal(wallStruct, wallStruct.frontIndices, wallStruct.backIndices, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
-        wallStruct.adjustment = wallStruct.adjustment - maxAdjustment*frontVector; %Addition, just in case adjustment is done somewhere else too
-
+        [wallStruct, maxAdjustment] = curveWall(wallStruct, wallStruct.frontIndices, curveFunction, frontVector, minHeight, maxHeight);
+%         maxAdjustment = -maxAdjustment;
+        wallStruct.vertices(wallStruct.backIndices,:) = wallStruct.vertices(wallStruct.backIndices,:) + maxAdjustment*frontVector;
+        wallStruct.adjustment = wallStruct.adjustment + maxAdjustment*frontVector; %Addition, just in case adjustment is done somewhere else too
+        
         %And adjacent corners
-        wallStructToTheLeft = curveIndicesLocal(wallStructToTheLeft, wallStructToTheLeft.frontCornerIndicesRight, wallStruct.backCornerIndicesRight, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
-        wallStructToTheRight = curveIndicesLocal(wallStructToTheRight, wallStructToTheRight.frontCornerIndicesLeft, wallStruct.backCornerIndicesLeft, maxAdjustment, curveFunction, frontVector, minHeight, maxHeight);
-    end
-
-    function [wallStruct] = curveIndicesLocal(wallStruct, frontIndices, backIndices, adjustment, curveFunction, curveDirection, minHeight, maxHeight)
-        wallStruct = curveWall(wallStruct, frontIndices, curveFunction, curveDirection, minHeight, maxHeight);
-        wallStruct.vertices(backIndices,:) = wallStruct.vertices(backIndices,:) - adjustment*curveDirection; 
+        wallStructToTheLeft = compressWall(wallStructToTheLeft, maxAdjustment, -frontVector);
+        wallStructToTheRight = compressWall(wallStructToTheRight, maxAdjustment, -frontVector);
     end
 end

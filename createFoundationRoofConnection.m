@@ -35,8 +35,6 @@ function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct
     foundationStruct.frontIndices = interestingFoundationVertexIndices';
     endIndex = size(foundationStruct.vertices,1);
     
-    betterpcshow(foundationStruct.vertices(foundationStruct.frontIndices,:))
-    
     %Add second set of vertices (since all "walls" are two sided)
     foundationStruct.vertices = [foundationStruct.vertices; foundationStruct.vertices(interestingFoundationVertexIndices,:) - 0.01*up];
     foundationStruct.backIndices = ((endIndex+1):size(foundationStruct.vertices))';
