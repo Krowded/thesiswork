@@ -17,36 +17,42 @@ function wallStruct = createWallFromSpecifications(minWidth, maxWidth, minHeight
     if isnan(adjustedMaxWidth), adjustedMaxWidth = maxWidth; end
     
 %   Back can just be a simple square
-    backVertices = [ adjustedMinWidth minHeight minDepth;
-                     adjustedMinWidth maxHeight minDepth;
+    numberOfLinesBackX = 2;
+    numberOfLinesBackY = 2;
+    backVertices = [ adjustedMinWidth maxHeight minDepth;
                      adjustedMaxWidth maxHeight minDepth;
-                     adjustedMaxWidth minHeight minDepth ];             
+                     adjustedMinWidth minHeight minDepth
+                     adjustedMaxWidth minHeight minDepth;];
                  
     %Front is a full grid
     frontVertices = zeros(numberOfLinesX*numberOfLinesY, 3);
     frontVertices(:,3) = maxDepth;
-    for i = 1:numberOfLinesX
-        frontVertices(((i-1)*numberOfLinesY+1):(i*numberOfLinesY), 1) = minWidth + (i-1)*distanceBetweenLinesX;
-    end
-
     for i = 1:numberOfLinesY
-        frontVertices(i:numberOfLinesY:size(frontVertices,1), 2) = minHeight + (i-1)*distanceBetweenLinesY;
+        frontVertices(((i-1)*numberOfLinesX+1):(i*numberOfLinesX), 2) = minHeight + (numberOfLinesY-i)*distanceBetweenLinesY;
+    end
+    
+    for i = 1:numberOfLinesX
+        frontVertices(i:numberOfLinesX:size(frontVertices,1), 1) = minWidth + (i-1)*distanceBetweenLinesX;
     end
     
     %Insert into structure
-    wallStruct.frontIndices = (1:size(frontVertices,1))';
-    wallStruct.backIndices = ((size(frontVertices,1)+1):(size(frontVertices,1)+size(backVertices,1)))';
     wallStruct.vertices = [frontVertices; backVertices];
     
-    %Save corner indices for curving purposes
-    wallStruct.frontCornerIndicesLeft = wallStruct.frontIndices(1:numberOfLinesY);
-    wallStruct.frontCornerIndicesRight = wallStruct.frontIndices(((numberOfLinesX-1)*numberOfLinesY+1):(numberOfLinesX*numberOfLinesY));
-    wallStruct.backCornerIndicesLeft = wallStruct.backIndices([1 2]);
-    wallStruct.backCornerIndicesRight = wallStruct.backIndices([4 3]);
+    wallStruct.frontIndices = (1:size(frontVertices,1))';
+    wallStruct.gridIndicesFront = customVec2Mat(wallStruct.frontIndices, numberOfLinesX);
+    
+    wallStruct.backIndices = ((size(frontVertices,1)+1):(size(frontVertices,1)+size(backVertices,1)))';
+    wallStruct.gridIndicesBack = customVec2Mat(wallStruct.backIndices, numberOfLinesBackX);
+    
+%     %Save corner indices for curving purposes
+    wallStruct.frontCornerIndicesLeft = wallStruct.gridIndicesFront(:,1);
+    wallStruct.frontCornerIndicesRight = wallStruct.gridIndicesFront(:,end);
+    wallStruct.backCornerIndicesLeft = wallStruct.gridIndicesBack(:,1);
+    wallStruct.backCornerIndicesRight = wallStruct.gridIndicesBack(:,end);
     
     %Save top indices for similar stuff
-    wallStruct.frontTopIndices = wallStruct.frontIndices(numberOfLinesY:numberOfLinesY:size(wallStruct.frontIndices,1));
-    wallStruct.backTopIndices = wallStruct.backIndices([2 3]);
+    wallStruct.frontTopIndices = wallStruct.gridIndicesFront(1,:)';
+    wallStruct.backTopIndices = wallStruct.gridIndicesBack(1,:)';
     
     %Rotate to fit basis
     z = normal;

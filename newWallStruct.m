@@ -15,4 +15,7 @@ function wallStruct = newWallStruct(model)
     wallStruct.frontTopIndices = [];
     wallStruct.backTopIndices = [];
     wallStruct.adjustment = 0;
+    
+    wallStruct.gridIndicesFront = [];
+    wallStruct.gridIndicesBack = [];
 end

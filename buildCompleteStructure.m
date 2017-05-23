@@ -52,7 +52,7 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     
     %Create missing parts of foundation (roof connection)
     foundationStruct = fuseFoundation(foundationStructs, roofShape);
-%     foundationStruct = mergeModels(foundationStructs)
+%      foundationStruct = mergeModels(foundationStructs)
     
     %Insert parts into model
     collectedParts = newModelStruct();

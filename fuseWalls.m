@@ -16,11 +16,11 @@ function foundationStruct = fuseWalls(foundationStructs)
     %Add section between each wall
     for i = 1:(numberOfWalls-1)
         %Get strips
-        stripRightFront = foundationStructs(i).frontCornerIndicesLeft + totalSize;
-        stripLeftBack = foundationStructs(i).backCornerIndicesLeft + totalSize;
+        stripRightFront = foundationStructs(i).gridIndicesFront(:,1) + totalSize;
+        stripLeftBack = foundationStructs(i).gridIndicesBack(:,1) + totalSize;
         totalSize = totalSize + size(foundationStructs(i).vertices,1);
-        stripLeftFront = foundationStructs(i+1).frontCornerIndicesRight + totalSize;
-        stripRightBack = foundationStructs(i+1).backCornerIndicesRight + totalSize;
+        stripLeftFront = foundationStructs(i+1).gridIndicesFront(:,end) + totalSize;
+        stripRightBack = foundationStructs(i+1).gridIndicesBack(:,end) + totalSize;
         
         %Fuse strips
         frontFacesStartingIndex = (i-1)*numberOfFacesPerPairOfWalls + 1;
@@ -30,10 +30,10 @@ function foundationStruct = fuseWalls(foundationStructs)
     end
     
     %Final two walls
-    stripRightFront = foundationStructs(end).frontCornerIndicesLeft + totalSize;
-    stripLeftBack = foundationStructs(end).backCornerIndicesLeft + totalSize;
-    stripLeftFront = foundationStructs(1).frontCornerIndicesRight;
-    stripRightBack = foundationStructs(1).backCornerIndicesRight;
+    stripRightFront = foundationStructs(end).gridIndicesFront(:,1) + totalSize;
+    stripLeftBack = foundationStructs(end).gridIndicesBack(:,1) + totalSize;
+    stripLeftFront = foundationStructs(1).gridIndicesFront(:,end);
+    stripRightBack = foundationStructs(1).gridIndicesBack(:,end);
     
     frontFacesStartingIndex = (numberOfWalls-1)*numberOfFacesPerPairOfWalls + 1;
     backFacesStartingIndex = frontFacesStartingIndex + numberOfFacesPerPairFront;
@@ -55,8 +55,8 @@ function foundationStruct = fuseWalls(foundationStructs)
         %Normally connect the strips
         newFaces = zeros(2*(maxStripSize-1), 3);
         for j = 1:(minStripSize-1)
-            newFaces((2*j)-1,:) = [stripLeft(j), stripRight(j), stripLeft(j+1)];
-            newFaces((2*j),:) = [stripLeft(j+1), stripRight(j), stripRight(j+1)];
+            newFaces((2*j)-1,:) = [stripLeft(j), stripLeft(j+1),  stripRight(j)];
+            newFaces((2*j),:) = [stripLeft(j+1), stripRight(j+1), stripRight(j)];
         end
         
         

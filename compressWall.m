@@ -2,10 +2,12 @@ function wallStruct = compressWall(wallStruct, distance, direction)
     share = dot(wallStruct.sideVector, direction);
         
     if share < 0 %Left wall
-        indices = [wallStruct.frontCornerIndicesRight; wallStruct.backCornerIndicesRight];
+%         indices = [wallStruct.frontCornerIndicesRight; wallStruct.backCornerIndicesRight];
+        indices = [wallStruct.gridIndicesFront(:,end); wallStruct.gridIndicesBack(:,end)];
         direction = wallStruct.sideVector;
     else %Right wall
-        indices = [wallStruct.frontCornerIndicesLeft; wallStruct.backCornerIndicesLeft];
+%         indices = [wallStruct.frontCornerIndicesLeft; wallStruct.backCornerIndicesLeft];
+        indices = [wallStruct.gridIndicesFront(:,1); wallStruct.gridIndicesBack(:,1)];
         direction = -wallStruct.sideVector;
     end
     
