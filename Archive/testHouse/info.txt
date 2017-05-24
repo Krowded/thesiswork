@@ -32,7 +32,6 @@ filename chimney.ply
 normal -1 0 0
 up 0 1 0
 style basic
-style farm
 .
 steps
 filename steps.ply 

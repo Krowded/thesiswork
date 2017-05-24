@@ -1,6 +1,6 @@
 function [foundationStructs, connections] = newFoundation()
     %Make a new foundation
-    numberOfWalls = 4;
+    numberOfWalls = 7;
     radius = 40000;
     height = 60000;
     wallThickness = 4000;

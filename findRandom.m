@@ -1,5 +1,10 @@
 function model = findRandom(keys, values)
     temp = findAll(keys, values);
-    index = randi(length(temp));
-    model = temp{index};
+    number = length(temp);
+    if number > 0
+        index = randi(number);
+        model = temp{index};
+    else
+        model = [];
+    end
 end

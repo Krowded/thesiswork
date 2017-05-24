@@ -103,8 +103,8 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
     end
     
     %Merge everything into single model
-    foundationStruct = mergeModels([newModelStruct(foundationStruct.vertices, foundationStruct.faces) collectedParts]);
-
+    fullBuildingModel = mergeModels([newModelStruct(foundationStruct.vertices, foundationStruct.faces) collectedParts]);
+    
     %Insert roof into model
-    fullBuildingModel = mergeModels([foundationStruct roofModel]);
+    fullBuildingModel = mergeModels([fullBuildingModel roofModel]);
 end

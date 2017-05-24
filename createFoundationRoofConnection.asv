@@ -46,5 +46,8 @@ function fusedFoundationStruct = createFoundationRoofConnection(foundationStruct
     [foundationStruct, holeStruct] = createHoleFromContour(foundationStruct, roofContour);
     
     %Retriangulate
-    fusedFoundationStruct = retriangulateWall(foundationStruct, holeStruct);
+    fusedfoundationStruct = retriangulateWall(foundationStruct, holeStruct);
+    
+    %Setup return model
+    fusedFoundationStruct = foundationStruct;
 end
