@@ -1,5 +1,5 @@
 %Create a new foundation
-[foundationStructs, connectionStructs] = newFoundation();
+[foundationStructs, connectionStructs] = randomFoundation();
 
 %Select style
 style = string('basic');

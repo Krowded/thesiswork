@@ -1,4 +1,4 @@
-function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, height, thickness, forward, up, numberOfLinesX, numberOfLinesY, cornerAngleLeft, cornerAngleRight)
+function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, height, thickness, normal, up, numberOfLinesX, numberOfLinesY, angleLeft, angleRight)
     minX = leftCorner(1);
     maxX = rightCorner(1);
     minY = 0;
@@ -10,7 +10,8 @@ function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, heig
     wallStruct = newWallStruct();
     wallStruct.frontVector = forward;
     wallStruct.upVector = up;
-    wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontVector));    
+    wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontVector));
+    
     
     densityX = numberOfLinesX - 1;
     densityY = numberOfLinesY - 1;
@@ -19,10 +20,18 @@ function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, heig
     distanceBetweenLinesZ = (rightZ - leftZ)/densityX;
     
     %Calculate difference between back and front to get proper angle
+    angleLeft = angleLeft/2; %We want half the angle between the walls
+    angleRight = angleRight/2;
     diff = thickness;
-    adjustmentMin = sqrt((diff/cosd(cornerAngleLeft))^2 - diff^2);
+    left = [leftCorner(1), 0, leftCorner(2)];
+    right = [rightCorner(1), 0, rightCorner(2)];
+%     adjustedMinWidth = minX + sqrt((diff/cosd(angleLeft))^2 - diff^2);
+%     if isnan(adjustedMinWidth), adjustedMinWidth = minX; end
+%     adjustedMaxWidth = maxX - sqrt((diff/cosd(angleRight))^2 - diff^2);
+%     if isnan(adjustedMaxWidth), adjustedMaxWidth = maxX; end
+    adjustmentMin = sqrt((diff/cosd(angleLeft))^2 - diff^2);
     if isnan(adjustmentMin), adjustmentMin = 0; end
-    adjustmentMax = sqrt((diff/cosd(cornerAngleRight))^2 - diff^2);
+    adjustmentMax = -sqrt((diff/cosd(angleRight))^2 - diff^2);
     if isnan(adjustmentMax), adjustmentMax = 0; end
 
     
@@ -33,9 +42,7 @@ function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, heig
                      maxX maxY rightZ;
                      minX minY leftZ
                      maxX minY rightZ;];
-    backVertices([1 3],:) = backVertices([1 3],:) - adjustmentMin*wallStruct.sideVector; %Match to connecting wall
-    backVertices([2 4],:) = backVertices([2 4],:) + adjustmentMax*wallStruct.sideVector;
-    backVertices = backVertices - wallStruct.frontVector*thickness;
+    backVertices = backVertices - normal*thickness;
                  
     %Front is a full grid
     frontVertices = zeros(numberOfLinesX*numberOfLinesY, 3);
@@ -67,4 +74,16 @@ function wallStruct = createWallFromSpecifications(leftCorner, rightCorner, heig
     %Save top indices for similar stuff
     wallStruct.frontTopIndices = wallStruct.gridIndicesFront(1,:)';
     wallStruct.backTopIndices = wallStruct.gridIndicesBack(1,:)';
+    
+    %Rotate to fit basis
+%     z = normal;
+%     y = up;
+%     x = normalize(cross(y, z));
+%     wallStruct.vertices = changeBasis(wallStruct.vertices, z, y, x);
+    
+    %Don't know why I have to do this this way, but it seems to make it
+    %correct
+%     wallStruct.frontVector = changeBasis([0, 0, 1], z, y, x);
+%     wallStruct.upVector = changeBasis([0, 1, 0], z, y, x);
+%     wallStruct.sideVector = normalize(cross(wallStruct.upVector, wallStruct.frontVector));
 end
