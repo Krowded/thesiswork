@@ -1,8 +1,8 @@
 %Create a new foundation
-[foundationStructs, connectionStructs] = randomFoundation();
+[foundationStructs, connectionStructs] = newFoundation();
 
 %Select style
-style = string('basic');
+style = string('magic');
 
 %Extract names
 partNames = string.empty;
@@ -16,4 +16,5 @@ end
 buildingModel = buildCompleteStructure(foundationStructs, connectionStructs, foundationCurves, roofStruct, partsStructs);
 
 %Write model to file
+% buildingModel = mergeModels(foundationStructs)
 write_ply(buildingModel.vertices, buildingModel.faces, 'test.ply');

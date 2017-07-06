@@ -49,36 +49,79 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
         end
     end
     
-    %Top and bottom tend to have leftovers from the contour. Weed them out.    
-    curveVertices = removeTail(curveVertices, 'ascend');
-    curveVertices = removeTail(curveVertices, 'descend');
+    %Shift array so that it starts with the lowest point
+    notDone = 1;
+    k = 1;
+    current = curveVertices(1,2);
+    L = size(curveVertices,1);
+    while notDone
+        if curveVertices(k+1, 2) < current
+            curveVertices = customCircShift(curveVertices, k);
+            current = curveVertices(1,2);
+            k = 1;
+        else
+            k = k+1;
+        end
+        
+        if k+1 > L
+            notDone = false;
+        end
+    end
+    
+    %Remove all points lost behind lowest and highest points
+    highestPoint = max(curveVertices(:,2)) - 0.00001;
+    while curveVertices(end,2) < highestPoint
+        curveVertices(end,:) = [];
+    end    
     
     %Remove any conflicting X values, keeping the larger one (i.e. the one
     %closer to the edge)
     curveVertices = removeDuplicates1D(curveVertices, [0 1], [1 0]);
+    curveVertices = removeRedundantVertices(curveVertices);
     
-    function vertices = removeTail(vertices, direction)
-        [~, I] = sort(vertices(:,2), 1, direction);
-        granularity = 100;
+    %Top and bottom tend to have leftovers from the contour. Weed them out.
+    curveVertices = removeTails(curveVertices);
 
-        startingIndex = I(1);
-        minHeight = vertices(startingIndex,2);
-        distanceToCheck = abs(vertices(I(1),2) - vertices(I(end),2))/granularity;
-        maxX = vertices(I(1),1);
-        
-        indicesToReduce = [];
-        for k = 2:length(I)
-            index = I(k);
-            
-            if abs(minHeight - vertices(index,2)) < distanceToCheck
-                indicesToReduce(end+1) = index;
-                maxX = max(maxX, vertices(index,1));
-            else
-                break;
-            end
+    function vertices = removeTails(vertices)
+        %Skip if too small to have a tail
+        if size(vertices,1) < 3
+            return;
         end
         
-        vertices(startingIndex,1) = maxX;
-        vertices(indicesToReduce,:) = [];
+        %Remove tail from the bottom
+        tenth = (vertices(end,2) - vertices(1,2)) / 10;
+        maxPoint = vertices(1,2) + tenth;
+        i = 1;
+        while vertices(i+1,2) < maxPoint
+            v1 = normalize(vertices(i+1,:) - vertices(i,:));
+            v2 = normalize(vertices(i+2,:) - vertices(i+1,:));
+            
+            angle = atan2d(norm(cross([v1 0], [v2 0])),dot(v1,v2));
+            
+            if angle > 45 %Bigger than 45 degrees seems to be unintentional - break off anyhing before this
+                vertices(1:i,:) = [];
+                i = 1;
+                continue;
+            end
+            i = i+1;
+        end
+        
+        %Remove tail from the top
+        tenth = (vertices(end,2) - vertices(1,2)) / 10;
+        minPoint = vertices(end,2) - tenth;
+        i = size(vertices,1);
+        while vertices(i-1,2) > minPoint
+            v1 = normalize(vertices(i-1,:) - vertices(i,:));
+            v2 = normalize(vertices(i-2,:) - vertices(i-1,:));
+            
+            angle = atan2d(norm(cross([v1 0], [v2 0])),dot(v1,v2));
+            
+            if angle > 45 %Bigger than 45 degrees seems to be unintentional - break off anyhing before this
+                vertices(i:end,:) = [];
+                i = size(vertices,1);
+                continue;
+            end
+            i = i-1;
+        end
     end
 end

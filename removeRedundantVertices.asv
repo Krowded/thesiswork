@@ -1,0 +1,22 @@
+%Takes ordered vertices and removes any vertices directly on a line between
+%two others
+function vertices = removeRedundantVertices(vertices)
+    i = 1;
+    while i < 1:(size(vertices,1) - 2)
+        first = vertices(i,:);
+        second = vertices(i+1,:);
+        third = vertices(i+2,:);
+        
+        line1 = second-first;
+        line1 = normalize(line1);
+        
+        line2 = third-first;
+        line2 = normalize(line2);
+        
+        if (line1*line2' - 1) < 0.0001
+        
+        end
+        
+        i = i + 1;
+    end
+end
