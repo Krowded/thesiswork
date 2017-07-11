@@ -1,19 +1,21 @@
-function model = fixOverCurving(model, slot)
+function model = fixOverCurving(model, slot, direction)
     %Move slot to center
     m = getTranslationMatrixFromVector(-slot);
     model.vertices = applyTransformation(model.vertices, m);
     
     %Rotate around axis until all points are out of contention
-    model.vertices = changeBasis(model.vertices, normalize(cross(model,upVector, model.frontVector)), model.upVector, model.frontVector);
+    model.vertices = changeBasis(model.vertices, normalize(cross(model.upVector, model.frontVector)), model.upVector, model.frontVector);
+    direction = changeBasis(direction,normalize(cross(model.upVector, model.frontVector)), model.upVector, model.frontVector);
     while 1
         a = -1;
-        rotationMatrix = [cos(a) -sin(a) 0 0;
-                          sin(a) cos(a) 0 0;
+        rotationMatrix = [cosd(a) -sind(a) 0 0;
+                          sind(a) cosd(a) 0 0;
                           0 0 1 0
                           0 0 0 1];
         model.vertices = applyTransformation(model.vertices, rotationMatrix);
         
-        if max(model.vertices*model.upVector') < 0
+        curr = max(model.vertices*direction')
+        if curr < 0% max(model.vertices*model.upVector') < 0
             break;
         end
     end

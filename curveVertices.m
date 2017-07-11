@@ -15,5 +15,5 @@ function [vertices, maxMove] = curveVertices(vertices, curveFunction, xdirection
     y = invscale*arrayfun(curveFunction, x);
     [~,i] = max(abs(y));
     maxMove = y(i);
-    vertices = vertices + y*ydirection;
+    vertices = vertices + y*ydirection;    
 end

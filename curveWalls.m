@@ -17,43 +17,8 @@ function wallStructs = curveWalls(wallStructs, curveStructs)
         heights = wallStruct.vertices(wallStruct.frontIndices,:)*upVector';
         minHeight = min(heights);
         maxHeight = max(heights);
-        scale = (maxHeight - minHeight)/100;
-        
-        %Get size of contribution from each curve
-        shares = zeros(length(curveStructs),1);
-        for j = 1:length(curveStructs)            
-            %Assume frontVector in same plane as all wall frontnormals
-            angle = acos(dot(frontVector, curveStructs(j).normal));
-            
-            if angle > pi/2 %Nothing happens if over 90 degrees
-                continue;
-            end
-            
-            if angle > 0.0001 %Skip investigations around 0, it's problematic
-                vec2D = flattenVertices([curveStructs(j).normal'; frontVector], normalize(cross(curveStructs(j).normal', frontVector)));
-                angleSign = sign(vec2D(1,1)*vec2D(2,2) - vec2D(1,2)*vec2D(2,1));
-                if isnan(angleSign)
-                    angleSign = 1;
-                end
-                angle = angleSign*angle;
-            end
+        curveFunction = collectCurves(curveStructs, frontVector);
 
-            %Scale curve
-            shares(j) = max(cos(angle),0);
-        end
-        %Normalize shares so it adds up to 1
-        shares = shares./sum(shares);
-        
-        %Gather contribution from each curve function
-        curveFunction = @(xq) 0;
-%         maxAdjustment = 0;
-        for j = 1:length(curveStructs)
-            curveFunction = @(xq) curveFunction(xq) + curveStructs(j).curveFunction(xq)*shares(j);
-             
-%             %Calculate biggest adjustment
-%             maxAdjustment = max(maxAdjustment, (shares(j) * scale * curveStructs(j).backSpan));
-        end
-            
         %Curve the wall
         [wallStruct, maxAdjustment] = curveWall(wallStruct, wallStruct.frontIndices, curveFunction, frontVector, minHeight, maxHeight);
 %         maxAdjustment = -maxAdjustment;

@@ -1,6 +1,6 @@
 function returnStructure = loadModelFolder(folderpath)
-    folderpath = string(folderpath);
-    filepath = folderpath + '\' + string('info.txt');
+    folderpath = string(folderpath) + '\';
+    filepath = folderpath + string('info.txt');
     [fileID,message] = fopen(filepath,'rt');	% open file in read text mode
 
     if fileID == -1, error(message); end
@@ -43,15 +43,21 @@ function returnStructure = loadModelFolder(folderpath)
                     %Add filepath to struct
                     returnStructure.(partName).filepaths = [returnStructure.(partName).filepaths; filepath];
                     
-                    if length(tokens) > 2 %Only normal allowed at the moment
-                        classifier = tokens{3};
+                    currentIndex = 3;
+                    totalTokens = length(tokens);
+                    while currentIndex < totalTokens
+                        classifier = tokens{currentIndex};
                         switch classifier
                             case 'normal'
-                                normal = [str2double(tokens{4}) str2double(tokens{5}) str2double(tokens{6})];
+                                normal = [str2double(tokens{currentIndex+1}) str2double(tokens{currentIndex+2}) str2double(tokens{currentIndex+3})];
                                 returnStructure.(partName).models(end).frontVector = normal;
+                            case 'up'
+                                up = [str2double(tokens{currentIndex+1}) str2double(tokens{currentIndex+2}) str2double(tokens{currentIndex+3})];
+                                returnStructure.(partName).models(end).upVector = up;
                             otherwise
                                 error(['Sub-classifier ' classifier ' unknown for type "filename"']);
                         end
+                        currentIndex = currentIndex + 4;
                     end                   
                 case 'normal' %Set normal
                     normal = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
@@ -59,9 +65,6 @@ function returnStructure = loadModelFolder(folderpath)
                 case 'up' %Set upVector
                     up = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
                     returnStructure.(partName).upVector = up;
-                    for i = 1:length(returnStructure.(partName).models) %Fill in extra parts...
-                        returnStructure.(partName).models(i).upVector = up;
-                    end
                 case 'style'
                     style = string(tokens{2});
                     returnStructure.(partName).style = [returnStructure.(partName).style; style];
