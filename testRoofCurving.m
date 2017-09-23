@@ -1,12 +1,16 @@
 %Original
-model2 = model.roof.models(2);
+[curves, model] = findStyle(string('magic'), string('roof'));
+model2 = loadAndMergeModels(model.models(1).filepaths);
+model2.upVector = model.models(1).upVector';
+model2.frontVector = model.models(1).frontVector';
+
 write_ply(model2.vertices, model2.faces, 'testOriginal.ply');
 
 %Change curve
-model2 = curveRoof(model2, foundationCurves, 1);
+model2 = curveRoof(model2, curves, 0);
 
 %Fix any overlap
-% max(model2.vertices*model2.upVector')
+% max(model2.vertices*model2.upVector'
 % limit
 % if max(model2.vertices*model2.upVector') > limit
 %     model2 = fixOverCurving(model2, slot, -forward);

@@ -1,0 +1,43 @@
+body
+filename body.ply
+normal 0 0 1
+up 0 1 0
+leg1
+leg2
+leg3
+leg4
+.
+tableTop1
+filename tableTop1.ply
+normal 0 0 1
+up 0 1 0
+.
+tableTop2
+filename tableTop2.ply
+normal 0 0 1
+up 0 1 0
+.
+leg1
+filename leg1.ply
+normal 0 0 -1
+//normal -0.70711 0 -0.70711
+up 0 1 0
+.
+leg2
+filename leg2.ply
+normal 0 0 -1
+//normal 0.70711 0 -0.70711
+up 0 1 0
+.
+leg3
+filename leg3.ply
+normal 0 0 1
+//normal 0.70711 0 0.70711
+up 0 1 0
+.
+leg4
+filename leg4.ply
+normal 0 0 1
+//normal -0.70711 0 0.70711
+up 0 1 0
+.

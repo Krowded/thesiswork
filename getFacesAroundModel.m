@@ -1,4 +1,4 @@
-    %Returns a structure with all faces and vertices needed for projection from below
+%Returns a structure with all faces and vertices needed for projection from below
 function [returnStruct] = getFacesAroundModel(curveModel, positionModel)
     zdirection = positionModel.frontVector;
     indices = [positionModel.gridIndicesFront(1,:) positionModel.gridIndicesBack(1,:)];
@@ -14,18 +14,18 @@ function [returnStruct] = getFacesAroundModel(curveModel, positionModel)
     vertexIndicesAroundPosition = curveModelDepths > (minDepth-margin) & curveModelDepths < (maxDepth+margin);
     vertexIndicesAroundPosition = find(vertexIndicesAroundPosition);
 
-%     If roof was too simple, just grab all vertices towards the edge
+    %If roof was too simple, just grab all vertices towards the edge
     if isempty(vertexIndicesAroundPosition)
         vertexIndicesAroundPosition = find(curveModelDepths > minDepth);
 
-%         If still empty, just grav every vertex
+    %If still empty, just grab every vertex
         if isempty(vertexIndicesAroundPosition)
             warning('No curve vertices found, returning NaN function')
             vertexIndicesAroundPosition = 1:size(curveModel.vertices,1);
         end
     end
         
-    %Grab every faces touched by those vertices
+    %Grab every face touched by those vertices
     faceIndicesOfInterest = any(ismember(curveModel.faces, vertexIndicesAroundPosition),2);
     facesOfInterest = curveModel.faces(faceIndicesOfInterest,:);
 

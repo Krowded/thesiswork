@@ -8,13 +8,7 @@ function [faces, normals] = removeFacesWithoutIndices(faces, indices, optional_n
     end
 
     %Remove faces without matching indices
-    i = 1;
-    while i < size(faces,1)
-        if isempty(intersect(faces(i,:), indices))
-            faces(i,:) = [];
-            normals(i,:) = [];
-            continue;
-        end
-        i = i+1;
-    end
+    indices = unique(indices(:))';   
+    indicesToKeep = any(faces(:,1) == indices, 2) | any(faces(:,2) == indices, 2)| any(faces(:,3) == indices, 2);
+    faces = faces(indicesToKeep,:);
 end

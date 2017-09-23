@@ -1,12 +1,17 @@
-%Adds 
-function foundationStruct = fuseFoundation(foundationStructs, roofStruct)
+%Closes off the roof around a flat level
+function foundationStruct = fuseFoundation(foundationStructs)
+    framePartLength = length(foundationStructs(1).gridIndicesFront(1,:)) - 1;
+    frame = zeros(length(foundationStructs)*framePartLength,1);
+    totalSize = 0;
+    startingIndex = 1;
     for i = 1:length(foundationStructs)
-        foundationStructs(i) = fuseTopOfWall(foundationStructs(i));
+        nextLineLength = length(foundationStructs(i).gridIndicesFront(1,1:(end-1)));
+        frame(startingIndex:(startingIndex + nextLineLength - 1)) = foundationStructs(i).gridIndicesFront(1,1:(end-1)) + totalSize;
+        totalSize = totalSize + size(foundationStructs(i).vertices,1);
+        startingIndex = startingIndex + nextLineLength;
     end
     
-    %Put walls together
-    foundationStruct = fuseWalls(foundationStructs);
-
-    %Add vertices and faces to fill empty space between wall and roof
-%     foundationStruct = createFoundationRoofConnection(foundationStruct, roofStruct);
+    foundationStruct = mergeModels(foundationStructs);
+    newFaces = retriangulateSurface(foundationStruct.vertices, frame, [], [], frame, length(frame), foundationStruct.upVector);
+    foundationStruct.faces = [foundationStruct.faces; newFaces];
 end

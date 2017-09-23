@@ -7,7 +7,7 @@ function [isCounterClockWise, isColinear] = isLeft(PointA, PointB, PointC)
     
     value = (PointB(1) - PointA(1))*(PointC(2) - PointA(2)) - (PointB(2) - PointA(2))*(PointC(1) - PointA(1));
       
-     if abs(value) < 0.0001 %Colinear
+     if abs(value) < 0.00001 %Colinear
          isColinear = 1;
      elseif value > 0 %Counter clockwise
          isCounterClockWise = 1;

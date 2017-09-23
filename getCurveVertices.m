@@ -1,20 +1,20 @@
 function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     vertices = changeBasis(vertices, zdirection, ydirection);
-    flattenedVertices = vertices(:,1:2);
-    shapeVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.90), :);
-    
+    flattenedVertices = vertices(:,[3 2]);
+    shapeVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.9), :);
+
     if isempty(shapeVertices)
         warning('Found no shape around vertices. Assuming curve is straight line.')
-        curveVertices = [0 0; 0 1];
+        curveVertices = [];
         return;
     end
-
-
+    
     %Using some configuration of alpha shapes might be better. For now,
     %boundary is fine
 %     shape = alphaShape(flattenedVertices(:,1), flattenedVertices(:,2));
-%     flattenedVertices = shape.Points;
-
+%     shapeVertices = shape.Points;
+    
+    
     %Since flattened vertices are in winding order, we can just check the
     %sign of the vector between two consecutive points
     curveVertices = [];
@@ -35,6 +35,7 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
             lastOneAdded = 0;
         end
     end
+   
     
     %Finish loop by checking connection between first and last index
     lastIndex = size(shapeVertices,1);
@@ -77,11 +78,20 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     %Remove any conflicting X values, keeping the larger one (i.e. the one
     %closer to the edge)
     curveVertices = removeDuplicates1D(curveVertices, [0 1], [1 0]);
-    curveVertices = removeRedundantVertices(curveVertices);
+    curveVertices = removeRedundantVertices(curveVertices);    
     
     %Top and bottom tend to have leftovers from the contour. Weed them out.
     curveVertices = removeTails(curveVertices);
-
+    
+    %Normalize so the highest point is at 100 and the lowest at 0
+    [maxY, I] = max(curveVertices(:,2));
+    minY = min(curveVertices(:,2));
+    %minX = min(curveVertices(:,1));
+    minX = curveVertices(I,1); %We want top vertex stationary later on
+    normalizer = 100/(maxY-minY);
+    curveVertices(:,2) = (curveVertices(:,2) - minY).*normalizer;
+    curveVertices(:,1) = (curveVertices(:,1) - minX).*normalizer; %Same scale, different cutoff    
+    
     function vertices = removeTails(vertices)
         %Skip if too small to have a tail
         if size(vertices,1) < 3
@@ -89,7 +99,7 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
         end
         
         %Remove tail from the bottom
-        tenth = (vertices(end,2) - vertices(1,2)) / 10;
+        tenth = (vertices(end,2) - vertices(1,2)) / 30;
         maxPoint = vertices(1,2) + tenth;
         i = 1;
         while vertices(i+1,2) < maxPoint
@@ -107,7 +117,7 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
         end
         
         %Remove tail from the top
-        tenth = (vertices(end,2) - vertices(1,2)) / 10;
+        tenth = (vertices(end,2) - vertices(1,2)) / 30;
         minPoint = vertices(end,2) - tenth;
         i = size(vertices,1);
         while vertices(i-1,2) > minPoint

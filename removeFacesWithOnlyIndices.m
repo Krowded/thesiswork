@@ -1,11 +1,10 @@
-%Returns a vector of all faces (and their normals if provided) that
+%Returns a vector of all faces that
 %reference only vertices in the indices array
-function modelStruct = removeFacesWithOnlyIndices(modelStruct, indices)
+function faces = removeFacesWithOnlyIndices(faces, indices)
     i = 1;
-    while i < size(modelStruct.faces,1)
-        if length(intersect(modelStruct.faces(i,:), indices)) == 3
-            modelStruct.faces(i,:) = [];
-            %modelStruct.normals(i,:) = [];
+    while i < size(faces,1)
+        if length(intersect(faces(i,:), indices)) == 3
+            faces(i,:) = [];
             continue;
         end
         i = i+1;

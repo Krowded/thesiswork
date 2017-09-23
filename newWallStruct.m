@@ -18,4 +18,7 @@ function wallStruct = newWallStruct(model)
     
     wallStruct.gridIndicesFront = [];
     wallStruct.gridIndicesBack = [];
+
+    wallStruct.lineDistanceY = 0;
+    wallStruct.lineDistanceX = 0;
 end

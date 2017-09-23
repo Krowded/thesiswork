@@ -4,9 +4,9 @@
 %only the lower indexed slots will be used
 %The scaling variable can be either 'uniform' or 'non-uniform' and decides
 %in which way the matrix will scale. The default is 'uniform'.
-function M = matchSlots(slots, targetSlots, scaling, normal, up)
+function M = matchSlots(slots, targetSlots, scalingType, normal, up)
     if nargin < 3
-        scaling = 'uniform';
+        scalingType = 'uniform';
         normal = [];
         up = [];
     end
@@ -20,23 +20,24 @@ function M = matchSlots(slots, targetSlots, scaling, normal, up)
         targetSlots = targetSlots(1:numSlots,:);
     end
     
-    if strcmp(scaling, 'uniform')
-        %Slot fitting
-        [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 1, 'doTrans', 1);
-        M = regParams.M;
-    elseif strcmp(scaling, 'non-uniform')
-        %Slot fitting
-        [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 0, 'doTrans', 1);
-        M = regParams.M;
-        slots = applyTransformation(slots, M);
-        %Non-uniform scaling
-        S = scaleMatrixFromSlots(slots, targetSlots, normal, up);
-        slots = applyTransformation(slots,S);
-        M = S*M;
-        %adjust again...
-        [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 0, 'doTrans', 1);
-        M = regParams.M*M;
-    else
-        error('Scaling can only be uniform or non-uniform');
+    switch scalingType
+        case 'uniform'
+            %Slot fitting, uniform scaling
+            [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 1, 'doTrans', 1);
+            M = regParams.M;
+        case 'non-uniform'
+            %Slot fitting, uniform scaling
+            [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 1, 'doTrans', 1);
+            M = regParams.M;
+            slots = applyTransformation(slots, M);
+            %Non-uniform scaling
+            S = scaleMatrixFromSlots(slots, targetSlots, normal, up);
+            slots = applyTransformation(slots,S);
+            M = S*M;
+            %Final adjustment without scaling
+            [regParams, ~, ~] = absor(slots', targetSlots', 'doScale', 0, 'doTrans', 1);
+            M = regParams.M*M;
+        otherwise
+            error('Scaling can only be uniform or non-uniform');
     end    
 end

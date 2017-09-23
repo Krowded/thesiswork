@@ -5,17 +5,13 @@ function curveStruct = getWallCurve(wallStruct)
     vertices = wallStruct.vertices;
     vertices = getTopPercentOfPoints(vertices, sideVector, 10);
     curveVertices = getCurveVertices(vertices, -sideVector, wallStruct.upVector);
-
-    %Normalize so the highest point is at 100 and the lowest at 0
-    [maxY, i] = max(curveVertices(:,2));
-    minY = min(curveVertices(:,2));
-    %minX = min(curveVertices(:,1));
-    minX = curveVertices(i,1); %We want top vertex stationary later on
-    normalizer = 100/(maxY-minY);
-    curveVertices(:,2) = (curveVertices(:,2) - minY).*normalizer;
-    curveVertices(:,1) = (curveVertices(:,1) - minX).*normalizer; %Same scale, different cutoff
+    if isempty(curveVertices)
+        curveStruct = [];
+        return;
+    end
     
     %Current depths
+    [~, i] = max(curveVertices(:,2));
     minX = min(curveVertices(:,1));
     maxX = max(curveVertices(:,1));
     baseX = curveVertices(i,1);

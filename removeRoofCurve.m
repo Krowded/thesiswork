@@ -11,5 +11,4 @@ function roofStruct = removeRoofCurve(roofStruct, minHeight, maxHeight)
     catch
         warning('no slots found');
     end
-
 end

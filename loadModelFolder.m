@@ -16,12 +16,15 @@ function returnStructure = loadModelFolder(folderpath)
             continue;
         end
         
-        returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'style', string.empty, 'type', [], 'attributes', string.empty);
+        returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'style', string.empty, 'type', string.empty);
         returnStructure.(partName).name = string(partName);
         returnStructure.(partName).models = [];
+        returnStructure.(partName).slotType = string('default');
+        returnStructure.(partName).connections = [];
         
         %Read line by line until '.'
         line = fgetl(fileID);
+
         while ~strcmp(line, '.')
             %Allow for comments
             if startsWith(line, '//')
@@ -42,6 +45,7 @@ function returnStructure = loadModelFolder(folderpath)
                     
                     %Add filepath to struct
                     returnStructure.(partName).filepaths = [returnStructure.(partName).filepaths; filepath];
+                    returnStructure.(partName).models(end).filepaths = [returnStructure.(partName).models(end).filepaths; filepath];
                     
                     currentIndex = 3;
                     totalTokens = length(tokens);
@@ -72,18 +76,38 @@ function returnStructure = loadModelFolder(folderpath)
                     filepath = folderpath + string(tokens{2}); %Append if more than one shape has been given
                     returnStructure.(partName).shape = mergeModels([returnStructure.(partName).shape loadAndMergeModels(filepath)]);
                     returnStructure.(partName).shape.filepaths = [returnStructure.(partName).shape.filepaths; string(filepath)];
-                case 'type'
+                case 'type' %Denotes if it cuts into a wall or not
                     type = string(tokens{2});
                     returnStructure.(partName).type = type;
-                case 'attribute' %Used for later additions
-                    attribute = string(tokens{2});
-                    returnStructure.(partName).attributes = [returnStructure.(partName).attributes; attribute];                        
+                case 'slottype' %How it attaches to other things
+                    slotType = string(tokens{2});
+                    returnStructure.(partName).slotType = slotType;         
+                case 'connections' %What else needs to be loaded in when it's chosen
+                    connections = string(tokens(2:end));
+                    returnStructure.(partName).connections = string([returnStructure.(partName).connections; connections]);
                 otherwise
-                    message = ['Unknown classifier: ' classifier ' when attempting to load ' folderpath];
+                    message = char(strjoin(['Unknown classifier: ' classifier ' when attempting to load ' folderpath]));
                     error(message);
             end
         
             line = fgetl(fileID);
+            if strcmp(line, '.')
+                returnStructure.(partName) = finishUpLocal(returnStructure.(partName));
+            end
+        end
+    end
+    
+    
+    %Adds in defaults optional parts
+    function part = finishUpLocal(part)
+        for i = 1:length(part.models)
+            if isempty(part.models(i).upVector)
+                part.models(i).upVector = part.upVector;
+            end
+            
+            if isempty(part.models(i).frontVector)
+                part.models(i).frontVector = part.frontVector;
+            end
         end
     end
 end

@@ -2,8 +2,12 @@
 %Returns an array of the angle between each vector from the center to each
 %point, in order
 function anglesBetweenPoints = getAnglesBetweenPoints(points, center)
+    if nargin < 2
+        center = [0 0 0];
+    end
+
     anglesBetweenPoints = NaN(size(points,1),1);
-    for i = 1:(length(points)-1)
+    for i = 1:(size(points,1)-1)        
         vec1 = normalize(points(i,:) - center);
         vec2 = normalize(points(i+1,:) - center);
         anglesBetweenPoints(i) = real(acos(dot(vec1,vec2)));

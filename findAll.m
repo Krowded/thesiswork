@@ -11,8 +11,9 @@ function models = findAll(keys, values)
 
         fields = fieldnames(model);
         for j = 1:length(fields)
-            if iscell(model.(fields{j}))
-                model.(fields{j}) = string(model.(fields{j}));
+            fieldContents = model.(fields{j});
+            if iscell(fieldContents) || (~isnumeric(fieldContents) && ~isstruct(fieldContents))
+                model.(fields{j}) = string(fieldContents);
             end
         end
 

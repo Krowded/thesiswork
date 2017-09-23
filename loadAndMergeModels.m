@@ -1,8 +1,11 @@
-function [model, subModelVertexSizes, subModelFaceSizes] = loadAndMergeModels(filepaths)
-    model = newModelStruct([], [], [], []);
+function [model, subModelVertexSizes, subModelFaceSizes] = loadAndMergeModels(filepaths, model)
+    if nargin < 2
+        model = newModelStruct([], [], [], []);
+    end
+    
     subModelVertexSizes = [];
     subModelFaceSizes = [];
-    filepaths = string(filepaths); %Cause blaha...
+    filepaths = string(filepaths);
     for i = 1:length(filepaths)
         [tempVertices, tempFaces] = read_ply(filepaths(i));
         tempModel = newModelStruct(tempVertices, tempFaces);

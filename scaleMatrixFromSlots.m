@@ -6,33 +6,29 @@ function S = scaleMatrixFromSlots(originalSlots, targetSlots, frontVectorSlots1,
     x = normalize(cross(y,z));
 
     %Lengths along each axis
-    sortedTemp = sort(originalSlots*x', 'descend');
-    diffX1 = sortedTemp(1) - sortedTemp(end);
-    sortedTemp = sort(originalSlots*y', 'descend');
-    diffY1 = sortedTemp(1) - sortedTemp(end);
-    sortedTemp = sort(originalSlots*z', 'descend');
-    diffZ1 = sortedTemp(1) - sortedTemp(end);
+    tempX = originalSlots*x';
+    diffX1 = max(tempX) - min(tempX);
+    tempY = originalSlots*y';
+    diffY1 = max(tempY) - min(tempY);
+    tempZ = originalSlots*z';
+    diffZ1 = max(tempZ) - min(tempZ);
     
-%     diffX1 = norm(originalSlots(1,:) - originalSlots(2,:));
-%     diffY1 = norm(originalSlots(2,:) - originalSlots(3,:));
-%     diffZ1 = norm(originalSlots(1,:) - originalSlots(5,:));
-     
-    sortedTemp = sort(targetSlots*x', 'descend');
-    diffX2 = sortedTemp(1) - sortedTemp(end);
-    sortedTemp = sort(targetSlots*y', 'descend');
-    diffY2 = sortedTemp(1) - sortedTemp(end);
-    sortedTemp = sort(targetSlots*z', 'descend');
-    diffZ2 = sortedTemp(1) - sortedTemp(end);
+    tempX = targetSlots*x';
+    diffX2 = max(tempX) - min(tempX);
+    tempY = targetSlots*y';
+    diffY2 = max(tempY) - min(tempY);
+    tempZ = targetSlots*z';
+    diffZ2 = max(tempZ) - min(tempZ);
 
-
-%     diffX2 = norm(targetSlots(1,:) - targetSlots(2,:));
-%     diffY2 = norm(targetSlots(2,:) - targetSlots(3,:));
-%     diffZ2 = norm(targetSlots(1,:) - targetSlots(5,:));
-    
     %Proportional difference
-    scaleZ = diffX2/diffX1; %Z and X are switched? Look into it
+    scaleX = diffX2/diffX1; %Z and X are switched? Look into it
     scaleY = diffY2/diffY1;
-    scaleX = diffZ2/diffZ1;
+    scaleZ = diffZ2/diffZ1;
+    
+    %If any direction NaN or Inf or zero we assume missing info and return no scaling
+    if isnan(scaleX) || isinf(scaleX) || scaleX == 0; scaleX = 1; end
+    if isnan(scaleY) || isinf(scaleY) || scaleY == 0; scaleY = 1; end
+    if isnan(scaleZ) || isinf(scaleZ) || scaleZ == 0; scaleZ = 1; end
     
     %Non-uniform scaling matrix
     S = scaleX*x';

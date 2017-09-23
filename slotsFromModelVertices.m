@@ -18,6 +18,6 @@ function slotVertices = slotsFromModelVertices(vertices, normal, up)
     
     %Get a set of slots from front and back slices
     slotVertices = zeros(8,3);
-    slotVertices(1:4,:) = slotsFromContour(backVertices, normal, up);
-    slotVertices(5:8,:) = slotsFromContour(frontVertices, normal, up);
+    slotVertices(1:4,:) = slotsFromContour(frontVertices, normal, up);
+    slotVertices(5:8,:) = slotsFromContour(backVertices, normal, up);  
 end

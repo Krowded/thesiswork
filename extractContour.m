@@ -1,7 +1,7 @@
 %Takes vertices, a normal and optionally indices, and returns the vertices
 %of the 2D convex hull with a normal equal to the normal argument in order. 
 %It also returns the original indices of those vertices.
-function [vertices,indices] = extractContour(vertices, normal, indices)
+function [vertices,indices] = extractContour(vertices, connections, normal, indices)
     %Adjust for optional arguments
     if exist('indices', 'var')
         vertices = vertices(indices,:);

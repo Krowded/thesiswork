@@ -14,7 +14,7 @@ function vertices = removeDuplicates1D(vertices, sortingDimension, maxingDimensi
     
     diffs = diff(sorted);
     i = 1;
-    while i < length(diffs)
+    while i < length(diffs)+1
         if abs(diffs(i))*scale < 0.00001
             if comparingVertices(i) > comparingVertices(i+1)
                 comparingVertices(i+1) = [];

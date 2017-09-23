@@ -13,6 +13,11 @@ function curveFunction = collectCurves(curveStructs, direction)
     %Gather contribution from each curve function
     curveFunction = @(xq) 0;
     for j = 1:length(curveStructs)
+        %No need to do any interpolation for a zero share
+        if shares(j) < 0.0001
+            continue;
+        end
+        
         curveFunction = @(xq) curveFunction(xq) + curveStructs(j).curveFunction(xq)*shares(j);
     end
 end
