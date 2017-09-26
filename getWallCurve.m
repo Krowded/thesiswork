@@ -20,7 +20,5 @@ function curveStruct = getWallCurve(wallStruct)
     curveStruct.vertices = curveVertices;
     curveStruct.curveFunction = string('linear');
     curveStruct.curveLength = size(curveVertices,1);
-    curveStruct.span = maxX - minX;
-    curveStruct.backSpan = baseX - minX;
     curveStruct.normal = wallStruct.frontVector;
 end

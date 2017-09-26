@@ -7,14 +7,14 @@ function [foundationStructs, connectionStructs] = addConnections(foundationStruc
         end
         
         for j = 1:length(parts)
-            if strcmp(parts{j}.name, connectionStructs(i).name)
+            if strcmp(parts{j}.class, connectionStructs(i).class)
                 matchingPart = parts{j};
             end
         end
         
         %If no match found, ignore the connection
         if ~exist('matchingPart','var')
-            warning(['Did not find any match for part [' char(connectionStructs(i).name) ']. Ignoring connection.'])
+            warning(['Did not find any match for part [' char(connectionStructs(i).class) ']. Ignoring connection.'])
             connectionStructs(i) = [];
             continue;
         end

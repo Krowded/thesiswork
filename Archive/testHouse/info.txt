@@ -1,4 +1,5 @@
-foundation
+foundationTestHouse
+class foundation
 filename wallFront.ply normal -1 0 0
 filename wallLeft.ply normal 0 0 -1
 filename wallRight.ply normal  0 0 1
@@ -7,34 +8,40 @@ normal -1 0 0
 up 0 1 0
 style basic
 .
-roof
+roofTestHouse
+class roof
 filename highpolyroofRight.ply normal 0 0.5399 0.8417 up 0 0.8417 -0.5399
 filename highpolyroofLeft.ply normal 0 0.5245 -0.8514 up 0 0.8514 0.5245
+shape roofShape.ply
 normal -1 0 0
 up 0 1 0
 style basic
-slotType intersect-foundation
+slotType intersect-foundationTestHouse
 .
-floor
+floorTestHouse
+class floor
 filename floor.ply
 normal -1 0 0
 up 0 1 0
 style basic
 .
-door
+doorTestHouse
+class door
 filename door.ply
 normal -1 0 0
 up 0 1 0
 type cut
 style basic
 .
-chimney
+chimneyTestHouse
+class chimney
 filename chimney.ply
 normal -1 0 0
 up 0 1 0
 style basic
 .
-steps
+stepsTestHouse
+class steps
 filename steps.ply 
 normal -1 0 0
 up 0 1 0

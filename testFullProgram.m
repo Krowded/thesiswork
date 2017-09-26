@@ -2,21 +2,22 @@
 [foundationStructs, connectionStructs] = newFoundation();
 
 %Select style
-style = string('magic');
+style = [string('cathedral')];
 
 %Extract names
-partNames = string.empty;
+partClasses = string.empty;
 for i = 1:length(connectionStructs)
-    partNames(i) = string(connectionStructs(i).name);
+    partClasses(i) = string(connectionStructs(i).class);
 end
 
-[foundationCurves, roofStruct, partsStructs] = findStyle(style, partNames);
+[foundationCurves, roofStruct, partsStructs] = findStyle(style, partClasses);
 
 for i = 1:length(partsStructs)
     slotType = strsplit(partsStructs{i}.slotType,'-');
     if strcmp(slotType{1}, 'surround') || strcmp(slotType{1}, 'intersect')
         newConnection = newConnectionStruct();
         newConnection.name = partsStructs{i}.name;
+        newConnection.class = partsStructs{i}.class;
         newConnection.connectedWall = [];
         newConnection.slots = partsStructs{i}.slots;
         newConnection.type = 'nocut';

@@ -54,7 +54,7 @@ function [Elements,varargout] = plyread(Path,Str)
 
 [fid,Msg] = fopen(Path,'rt');	% open file in read text mode
 
-if fid == -1, error(Msg); end
+if fid == -1, Path, error(Msg); end
 
 Buf = fscanf(fid,'%s',1);
 if ~strcmp(Buf,'ply')

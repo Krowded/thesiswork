@@ -3,7 +3,5 @@ function curveStruct = newCurveStruct()
 	curveStruct.vertices = [];
     curveStruct.curveFunction = [];
     curveStruct.curveLength = [];
-    curveStruct.span = [];
-    curveStruct.backSpan = [];
     curveStruct.normal = [];
 end

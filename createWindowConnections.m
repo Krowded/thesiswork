@@ -40,9 +40,11 @@ function connections = createWindowConnections(wallStructs, windowWidth, windowH
             switch num
                 case 1
                     connection.name = 'bigWindow';
+                    connection.class = 'bigWindow';
                     connection.type = 'nocut';
                 case 2
                     connection.name = 'smallWindow';
+                    connection.class = 'bigWindow';
                     connection.type = 'cut';
             end
             connection.connectedWall = wallNumber;

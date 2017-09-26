@@ -2,22 +2,32 @@
 [foundationStructs, connectionStructs] = newFoundation();
 
 %Select style
-style = string('chinese');
+style = [string('$or { basic } chinese string('magic')];
 
 %Extract names
-partNames = string.empty;
+partClasses = string.empty;
 for i = 1:length(connectionStructs)
-    partNames(i) = string(connectionStructs(i).name);
+    partClasses(i) = string(connectionStructs(i).class);
 end
 
-[foundationCurves, roofStruct, partsStructs] = findStyle(style, partNames);
+[foundationCurves, roofStruct, partsStructs] = findStyle(style, partClasses);
+
+if isempty(foundationCurves)
+    return;
+end
 
 for i = 1:length(partsStructs)
-    if ~isempty(partsStructs{i}.slotType)
+    slotType = strsplit(partsStructs{i}.slotType,'-');
+    if strcmp(slotType{1}, 'surround') || strcmp(slotType{1}, 'intersect')
         newConnection = newConnectionStruct();
-        newConnection.name =
-        
-        connectionStructs(end+1) =      
+        newConnection.name = partsStructs{i}.name;
+        newConnection.class = partsStructs{i}.class;
+        newConnection.connectedWall = [];
+        newConnection.slots = partsStructs{i}.slots;
+        newConnection.type = 'nocut';
+        newConnection.frontVector = partsStructs{i}.frontVector;
+        newConnection.upVector = partsStructs{i}.upVector;
+        connectionStructs(end+1) = newConnection;
     end
 end
 

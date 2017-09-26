@@ -2,12 +2,12 @@ function [foundationStructs, connections] = newFoundation()
     %Make a new foundation
     numberOfWalls = 4;%2*randi([2 4],1);
     radius = 40000;
-    height = 60000;
+    height = (rand() + 60000;
     wallThickness = 4000;
     [foundationStructs, topCorners] = buildAnySidedFoundation(numberOfWalls, radius, height, wallThickness);
 
     % Add roof slots
-    roofHeight = height*(0.5+rand());
+    roofHeight = height;
 
    %Longest walls version
 %     foundationStructs(1).slots = corners;

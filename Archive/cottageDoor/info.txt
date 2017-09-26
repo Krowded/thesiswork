@@ -1,4 +1,5 @@
-door
+doorCottage
+class door
 filename cottageDoor.ply
 shape cottageDoorContour.ply
 normal 1 0 0

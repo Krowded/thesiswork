@@ -1,4 +1,4 @@
-function [foundationCurves, roofStruct, partsStructs] = findStyle(styles, partClasses)
+function [foundationCurves, roofStruct, partsStructs] = findStyle(styles, partNames)
     queryCell{1} = string('roof');
     queryCell{2} = styles;
     roofStruct = findRandom([string('class'), string('style')], queryCell);
@@ -15,10 +15,10 @@ function [foundationCurves, roofStruct, partsStructs] = findStyle(styles, partCl
     end
     
     partsStructs = cell.empty;
-    for i = 1:length(partClasses)
-        class = partClasses(i);
-        queryCell{1} = string(class);
-        foundParts = findRandom([string('class'), string('style')], queryCell);
+    for i = 1:length(partNames)
+        name = partNames(i);
+        queryCell{1{
+        foundParts = findRandom([string('class'), string('style')], [string(name), string(styles)]);
         
         for j = 1:length(foundParts)
             foundParts(j).upVector = foundParts(j).upVector';
@@ -26,7 +26,8 @@ function [foundationCurves, roofStruct, partsStructs] = findStyle(styles, partCl
         end
         
         if isempty(foundParts)
-            warning(['No part of class [' char(class) '] found'])
+            
+            warning(['No part of class [' char(name) '] in style [' char(styles) '] found'])
             continue;
         end
         

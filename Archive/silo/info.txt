@@ -1,4 +1,5 @@
-foundation
+foundationSilo
+class foundation
 filename wall1.ply normal -1  0  0
 filename wall2.ply normal -0.9511 0 -0.3090
 filename wall3.ply normal -0.8090 0 -0.5878
@@ -24,32 +25,37 @@ up 0 1 0
 style farm
 style cottage
 .
-roof
+roofSilo
+class roof
 filename roof.ply 
 normal 0 0 -1
 up 0 1 0
 style farm
-slotType intersect-foundation
+slotType intersect-foundationSilo
 .
-pipe
+pipeSilo
+class pipe
 filename pipe.ply
 normal -1 0 0
 up 0 1 0
 style farm
 .
-ladderbig
+ladderbigSilo
+class ladder
 filename ladderbig.ply
 normal -1 0 0
 up 0 1 0
 style farm
 .
-platform
+platformSilo
+class platform
 filename platform.ply
 normal -1 0 0
 up 0 1 0
 style farm
 .
-laddersmall
+laddersmallSilo
+class ladder
 filename laddersmall.ply
 normal 1 0 0
 up 0 1 0

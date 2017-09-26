@@ -60,7 +60,7 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
         part = partsStructs{i};
         
         for j = 1:length(connectionStructs)
-            if strcmp( connectionStructs(j).name, part.name ) %CHANGE TO USE UNIQUE ID INSTEAD OF NAME
+            if strcmp( connectionStructs(j).class, part.class ) %CHANGE TO USE UNIQUE ID INSTEAD OF NAME
                 %Adjust transformation to curve
                 if connectionStructs(j).connectedWall == 0 %Things connected to roof %CHANGE SO WE CAN HAVE COMPLETE DISCONNECTS TOO
                     slots = applyTransformation(partsStructs{i}.slots, connectionStructs(j).transformationMatrix);

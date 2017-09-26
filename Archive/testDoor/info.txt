@@ -1,4 +1,5 @@
-door
+doorTestDoor
+class door
 filename door.ply
 normal -1 0 0
 up 0 1 0

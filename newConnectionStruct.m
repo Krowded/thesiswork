@@ -1,6 +1,7 @@
 function connectionStruct = newConnectionStruct()
     connectionStruct = struct();
     connectionStruct.name = '';
+    connectionStruct.class = '';
     connectionStruct.connectedWall  = 0;
     connectionStruct.slots = [];
     connectionStruct.type = '';

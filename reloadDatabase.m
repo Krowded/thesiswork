@@ -21,14 +21,14 @@ for i = 1:length(infoFiles)
                     mergedModel.slotType = part.slotType;
                     part.slots = slotsFromRoofFoundationIntersection(mergedModel, targetModel); 
                 else
-                    error('Missing intersection target ' + string(slotType{2}));
+                    error(['Missing intersection target: ' char(slotType{2})]);
                 end
             case 'surround'
                 if isfield(set, slotType{2})
                     mergedModel.slotType = part.slotType;
                     part.slots = set.(slotType{2}).slots;
                 else
-                    error('Missing surround target ' + string(slotType{2}));
+                    error(['Missing surround target: ' char(slotType{2})]);
                 end
             otherwise
                 if ~isempty(part.shape.vertices)
@@ -49,7 +49,7 @@ for i = 1:length(infoFiles)
 
 
         %Special case
-        if strcmp(partName, 'foundation')
+        if strcmp(part.class, 'foundation')            
             part.curves = getFoundationCurves(part.models);
             foundation = part;
         end

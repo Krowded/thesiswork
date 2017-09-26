@@ -7,6 +7,7 @@ function connection = createDoorConnection(wallStructs, wallNumber, doorWidth, d
 
     connection = newConnectionStruct();
     connection.name = 'door';
+    connection.class = 'door';
     connection.connectedWall = wallNumber;
     connection.slots = slots;
     connection.type = 'cut';

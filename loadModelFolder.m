@@ -18,6 +18,7 @@ function returnStructure = loadModelFolder(folderpath)
         
         returnStructure.(partName) = struct('filepaths', [], 'shape', newModelStruct(), 'style', string.empty, 'type', string.empty);
         returnStructure.(partName).name = string(partName);
+        returnStructure.(partName).class = [];
         returnStructure.(partName).models = [];
         returnStructure.(partName).slotType = string('default');
         returnStructure.(partName).connections = [];
@@ -62,7 +63,9 @@ function returnStructure = loadModelFolder(folderpath)
                                 error(['Sub-classifier ' classifier ' unknown for type "filename"']);
                         end
                         currentIndex = currentIndex + 4;
-                    end                   
+                    end
+                case 'class'
+                    returnStructure.(partName).class = [returnStructure.(partName).class string(tokens{2})];
                 case 'normal' %Set normal
                     normal = [str2double(tokens{2}) str2double(tokens{3}) str2double(tokens{4})];
                     returnStructure.(partName).frontVector = normal;

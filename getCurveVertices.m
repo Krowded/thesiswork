@@ -1,6 +1,7 @@
 function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     vertices = changeBasis(vertices, zdirection, ydirection);
     flattenedVertices = vertices(:,[3 2]);
+    
     shapeVertices = flattenedVertices(boundary(flattenedVertices(:,1), flattenedVertices(:,2), 0.9), :);
 
     if isempty(shapeVertices)
@@ -20,7 +21,6 @@ function curveVertices = getCurveVertices(vertices, zdirection, ydirection)
     curveVertices = [];
     lastOneAdded = 0; %Keep track of if we are in a chain of adding, otherwise we need to add current vertex as well
     addedIndices = [];
-   
     for j = 1:(size(shapeVertices,1)-1)
         edge = shapeVertices(j+1,:) - shapeVertices(j,:);
         if edge(2) > 0
