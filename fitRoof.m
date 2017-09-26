@@ -4,6 +4,11 @@ function [foundationStructs, roofM, newRoofShape] = fitRoof(foundationStructs, n
     newRoofShape.slots = applyTransformation(newRoofShape.slots, roofM);
     newRoofShape.vertices = applyTransformation(newRoofShape.vertices, roofM);    
     
+    %If noextend type, done here
+    if strcmp(newRoofShape.type, 'noextend')
+        return;
+    end
+    
     %Project each wall point upwards and extend them to intersection
     for i = 1:length(foundationStructs)
         foundationStructs(i) = extendUp(foundationStructs(i), newRoofShape);

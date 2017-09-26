@@ -16,10 +16,11 @@ for i = 1:length(infoFiles)
         switch slotType{1}
             case 'intersect'
                 if isfield(set, slotType{2})
-                    targetModel = set.(slotType{2}).models;
+                    targetModel = mergeModels(set.(slotType{2}).models);
                     mergedModel = mergeModels(part.models); 
                     mergedModel.slotType = part.slotType;
-                    part.slots = slotsFromRoofFoundationIntersection(mergedModel, targetModel); 
+%                     part.slots = slotsFromRoofFoundationIntersection(mergedModel, targetModel); 
+                    part.slots = slotsFromModelIntersection(mergedModel, targetModel); 
                 else
                     error(['Missing intersection target: ' char(slotType{2})]);
                 end

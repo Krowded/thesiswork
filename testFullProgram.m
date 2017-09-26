@@ -2,7 +2,7 @@
 [foundationStructs, connectionStructs] = newFoundation();
 
 %Select style
-style = [string('cathedral')];
+style = [string('cathedral') string('magic')];
 
 %Extract names
 partClasses = string.empty;

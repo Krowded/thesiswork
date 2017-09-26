@@ -9,7 +9,13 @@ function fullBuildingModel = buildCompleteStructure(foundationStructs, connectio
             roofShape = roofModel;
         end
         roofShape.slots = roofStruct.slots;
-
+        
+        if isfield(roofStruct, 'type')
+            roofShape.type = roofStruct.type;
+        else
+            roofShape.type = string.empty;
+        end
+        
         %Attach roof        
         [foundationStructs, roofTransformationMatrix1, roofShape] = fitRoof(foundationStructs, roofShape); 
 %         write_ply(roofShape.vertices, roofShape.faces,'roofShape.ply')
